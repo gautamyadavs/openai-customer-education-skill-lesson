@@ -6,7 +6,7 @@
 <title>Author Your First Skill · Module 1, Page 1 · Agent Skills</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400..700;1,400..700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
 <style>
   :root {
   --cream: #FAFAFA;
@@ -906,7 +906,7 @@
   }
   
   /* Responsive fallback: when the viewport is too narrow for side-gutter
-     callouts (< 1280px or when the sidebar consumes too much width),
+     callouts (< 1280px or when the expanded sidebar consumes too much width),
      callouts revert to inline display under their anchor. */
   @media (max-width: 1279px) {
     body.lxd-mode .lxd-callout {
@@ -917,6 +917,16 @@
     }
     body.lxd-mode .lxd-callout::before { display: none; }
     body.lxd-mode [data-lxd-target]::after { display: none; }
+  }
+  @media (max-width: 1519px) {
+    body.lxd-mode:not(.sidebar-collapsed) .lxd-callout {
+      position: static;
+      width: auto;
+      max-width: 100%;
+      margin: 8px 0 12px;
+    }
+    body.lxd-mode:not(.sidebar-collapsed) .lxd-callout::before { display: none; }
+    body.lxd-mode:not(.sidebar-collapsed) [data-lxd-target]::after { display: none; }
   }
   
   /* In LXD mode, hide existing block-level .lxd-note instances EXCEPT the
@@ -2470,6 +2480,13 @@
     border-radius: 6px;
     padding: 56px 32px;
     margin: 48px -32px;
+  }
+  #section-build-your-skill {
+    padding-top: 16px;
+  }
+  #section-build-your-skill .lab {
+    margin-top: 0;
+    padding-top: 40px;
   }
   .lab__header { text-align: center; margin-bottom: 48px; }
   /* .lab__kicker no longer used; replaced by .checkpoint__label inside .lab__header.
@@ -4965,22 +4982,28 @@
     line-height: 1.55;
     color: var(--ink-soft);
     border-radius: 0 0 4px 4px;
-    border-left: 2px solid transparent;
+    border: 0 solid transparent;
+    border-top: 0;
     transition: max-height 0.25s ease-out, padding 0.25s ease-out, margin-top 0.25s ease-out;
+  }
+  .answers li:has(.option-feedback.show) .answer {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
   .option-feedback.show {
     max-height: 400px;
     padding: 12px 18px 14px;
-    margin-top: -4px;
+    margin-top: 0;
+    border-width: 0 1px 1px;
   }
   .option-feedback--correct {
     background: #EFF4EC;
-    border-left-color: var(--evergreen);
+    border-color: var(--evergreen);
     color: var(--evergreen-deep);
   }
   .option-feedback--incorrect {
     background: #FAF1ED;
-    border-left-color: var(--clay);
+    border-color: var(--clay);
   }
   .option-feedback strong {
     color: var(--evergreen);
@@ -5253,6 +5276,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
+  .next__inner--next-only {
+    grid-template-columns: 1fr;
+  }
   .next__link {
     display: flex;
     flex-direction: column;
@@ -5281,6 +5307,10 @@
     align-items: flex-end;
     text-align: right;
     border-left: 1px solid var(--rule);
+  }
+  .next__inner--next-only .next__link--next {
+    grid-column: 1;
+    border-left: 0;
   }
   .next__link-label {
     font-family: var(--mono);
@@ -5335,6 +5365,9 @@
     .next__link--next {
       border-left: none;
       border-top: 1px solid var(--rule);
+    }
+    .next__inner--next-only .next__link--next {
+      border-top: 0;
     }
   }
   footer {
@@ -5687,10 +5720,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 32px 0;
+    margin: 16px 0;
     color: var(--accent);
     font-family: var(--display);
-    font-size: 24px;
+    font-size: 22px;
     letter-spacing: 0.5em;
     font-style: italic;
   }
@@ -5847,7 +5880,7 @@
       <span class="meta-bar__brand-text">OpenAI Academy</span>
     </div>
     <div class="meta-bar__right">
-      <button class="view-toggle" id="viewToggle" type="button" aria-pressed="false" title="Toggle instructional design annotations">
+      <button class="view-toggle" id="viewToggle" type="button" aria-pressed="false" aria-label="Toggle instructional design annotations" title="Toggle instructional design annotations">
         <span class="view-toggle__pill">
           <span class="view-toggle__dot"></span>
         </span>
@@ -6021,7 +6054,7 @@
     <ul style="margin: 10px 0 0; padding-left: 20px; font-size: 13px; line-height: 1.7;">
       <li><strong style="color: var(--correct);">Evergreen / green</strong>, only correct, success, right answer.</li>
       <li><strong style="color: var(--wrong);">Clay / red</strong>, only wrong, error, missing.</li>
-      <li><strong style="color: var(--gold);">Gold</strong>, only achievement, credential, warning.</li>
+      <li><strong style="color: var(--gold-deep);">Gold</strong>, only achievement, credential, warning.</li>
       <li><strong style="color: var(--accent);">Slate</strong>, structural accent, decoration, brand UI (numbers, kickers, hover states, progress, profile, links).</li>
     </ul>
     <p style="margin-top: 12px; font-size: 13px;">Earlier iterations used clay and evergreen for both decoration and feedback, same colors meant different things in different contexts. The slate accent decouples them. Color is also paired with non-color cues (icons, labels, position) per WCAG 1.4.1, so colorblind learners get the same signal.</p>
@@ -6100,7 +6133,7 @@
       <div class="orient-video__frame">
         <iframe src="https://player.vimeo.com/video/1166414134?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Skills"></iframe>
       </div>
-      <figcaption class="orient-video__caption">A 2-minute orientation to skills in ChatGPT from OpenAI Academy. Then the rest of the page is hands-on: you'll design a skill of your own, watch one activate in a simulation, place content into the right layer, and diagnose three common failure modes.</figcaption>
+      <figcaption class="orient-video__caption">A 5-minute orientation to skills in ChatGPT from OpenAI Academy. Then you'll design a skill of your own and understand how skills work.</figcaption>
     </figure>
   </div>
 </section>
@@ -7265,16 +7298,12 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   <p><strong>Cross-module navigation lives in the sidebar, not in lesson-bottom cards.</strong> An earlier draft tried two competing affordances: inline Going Deeper callouts pointing at later modules, plus a page-nav band at lesson end. After a navigation audit, the inline callouts were removed entirely: the sidebar already shows pages 2-4 with title + duration in a persistent location, so the inline callouts duplicated navigation the learner could see at all times. The page-nav band at the bottom now handles its one job cleanly (continue the sequence: forward to page 2), and the sidebar handles deeper jumps. One pattern per job, no competing affordances.</p>
 </div>
 
-<!-- PAGE NAVIGATION, full-width band with two halves: prev (left) +
-     next (right). Each half shows an action label with arrow on top and
-     the page identifier + title on the second line. Mirrors the
-     Articulate Rise "Next Lesson footer" and Microsoft Learn "Next unit"
-     patterns (the dominant standards in enterprise/technical eLearning).
-     This page is 1.1 (first in module) so prev is empty; future pages
-     add a prev link and it slots into the left half. -->
+<!-- PAGE NAVIGATION. The first page only shows the next-page link; future
+     pages can add a prev link and the two-half layout will return. Mirrors
+     the Articulate Rise "Next Lesson footer" and Microsoft Learn "Next unit"
+     patterns used in enterprise/technical eLearning. -->
 <nav class="next" aria-label="Page navigation">
-  <div class="next__inner">
-    <!-- prev slot intentionally empty, first page in module -->
+  <div class="next__inner next__inner--next-only">
     <a class="next__link next__link--next" href="#">
       <span class="next__link-label">
         Next page
@@ -7366,7 +7395,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       return window.matchMedia('(max-width: 900px)').matches;
     }
 
-    function setState(state) {
+    function setState(state, persistPreference = true) {
       nav.dataset.state = state;
       toggle.setAttribute('aria-expanded', state === 'expanded' ? 'true' : 'false');
       toggle.setAttribute('aria-label', state === 'expanded' ? 'Collapse module navigation' : 'Expand module navigation');
@@ -7376,27 +7405,31 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         if (fab) fab.setAttribute('data-show', 'false');
         document.body.classList.toggle('sidebar-collapsed', state === 'collapsed');
       }
-      try { localStorage.setItem('courseNavState', state); } catch(e) {}
+      if (persistPreference && !isMobile()) {
+        try { localStorage.setItem('courseNavState', state); } catch(e) {}
+      }
     }
 
     toggle.addEventListener('click', () => {
       setState(nav.dataset.state === 'expanded' ? 'collapsed' : 'expanded');
     });
     if (fab) {
-      fab.addEventListener('click', () => setState('expanded'));
+      fab.addEventListener('click', () => setState('expanded', false));
     }
 
     // Initial state: respect mobile default (collapsed) or last preference
     let initial = 'expanded';
     try { initial = localStorage.getItem('courseNavState') || 'expanded'; } catch(e) {}
     if (isMobile()) initial = 'collapsed';
-    setState(initial);
+    setState(initial, !isMobile());
 
     // Resize: re-evaluate mobile vs desktop
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => setState(nav.dataset.state), 120);
+      resizeTimer = setTimeout(() => {
+        setState(isMobile() ? 'collapsed' : nav.dataset.state, false);
+      }, 120);
     });
   })();
 
@@ -7501,7 +7534,13 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       const anatTargets = ['name', 'description', 'instructions', 'resources'];
       anatTargets.forEach(t => {
         const h = document.querySelector(`.anat-hotspot[data-region="${t}"]`);
-        if (h) h.click();
+        if (h) {
+          h.dispatchEvent(new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+          }));
+        }
       });
 
       // 5. Content placement (drag-and-drop): use the programmatic helper
@@ -7544,16 +7583,23 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
     // Right-side callouts: anchored to right: 16px from viewport edge.
     // Left-side callouts (data-lxd-side="left"): left: 16px.
     const vw = document.documentElement.clientWidth;
-    const useGutter = vw >= 1280;
+    const sidebarCollapsed = document.body.classList.contains('sidebar-collapsed');
+    const useGutter = vw >= 1280 && (sidebarCollapsed || vw >= 1520);
     document.querySelectorAll('.lxd-callout').forEach(callout => {
       const sel = callout.dataset.lxdAnchor;
       const anchor = sel ? document.querySelector(sel) : null;
       if (!anchor || !useGutter) {
+        if (callout._lxdMarker && callout._lxdMarker.parentNode && callout.parentNode !== callout._lxdMarker.parentNode) {
+          callout._lxdMarker.parentNode.insertBefore(callout, callout._lxdMarker.nextSibling);
+        }
         callout.style.position = '';
         callout.style.top = '';
         callout.style.left = '';
         callout.style.right = '';
         return;
+      }
+      if (callout.parentNode !== document.body) {
+        document.body.appendChild(callout);
       }
       const rect = anchor.getBoundingClientRect();
       const top = rect.top + window.scrollY;
@@ -7570,8 +7616,12 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   }
 
   // Move callouts to body level so they share a single positioning context
-  // (the body), unaffected by section padding or other transforms.
+  // (the body), unaffected by section padding or other transforms. Keep a
+  // marker behind so responsive fallback can restore source-order placement.
   document.querySelectorAll('.lxd-callout').forEach(c => {
+    const marker = document.createComment('lxd-callout');
+    c._lxdMarker = marker;
+    c.parentNode.insertBefore(marker, c);
     document.body.appendChild(c);
   });
 
@@ -8920,6 +8970,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       // way a real successful run would. The checkpoint's interaction key is
       // aggregated under "cp3" so any one card place currently fires a single
       // counted check; this preserves that behavior.
+      markInteracted('cp3:worked-example');
     };
   });
 
