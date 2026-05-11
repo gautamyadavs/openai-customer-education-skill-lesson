@@ -1647,7 +1647,7 @@
   }
   .load-arch {
     display: grid;
-    grid-template-columns: 1.4fr 0.85fr;
+    grid-template-columns: 1.5fr 0.8fr;
     gap: 20px;
     margin: 24px 0 28px;
     align-items: stretch;
@@ -1807,19 +1807,6 @@
     margin-bottom: 10px;
     display: flex;
     align-items: center;
-  }
-  .load-arch__step-num {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    line-height: 18px;
-    text-align: center;
-    background: var(--ink);
-    color: var(--paper);
-    border-radius: 50%;
-    margin-right: 8px;
-    letter-spacing: 0;
-    font-weight: 700;
   }
   .load-arch__items {
     margin: 0;
@@ -2069,6 +2056,11 @@
     /* Hide the stage-2 awaiting state and remove its layout reservation */
     display: none;
   }
+  .sim__trial[data-staging="initial"] .sim__step-3,
+  .sim__trial[data-staging="initial"] .sim__connector {
+    /* Hide the L3+ stage and inter-stage connectors in initial staging. */
+    display: none;
+  }
   /* Initial state: collapse the on-disk region's layout space so the
      trial reads as a focused decision moment, not a half-built diagram
      with a void on the right. The reveal restores layout via display:block. */
@@ -2179,6 +2171,99 @@
     transition: opacity 0.4s ease, color 0.4s ease;
   }
   .sim__step-2[data-step2-state="active"] .load-arch__items {
+    display: block;
+  }
+
+  /* ── L1/L2/L3+ stage badges + names + details ── */
+  .sim__stage-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    background: rgba(13, 13, 13, 0.08);
+    color: var(--accent);
+    border-radius: 3px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+  .sim__stage-name {
+    color: var(--ink);
+    margin-right: 10px;
+  }
+  .sim__stage-detail {
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--ink-quiet);
+  }
+
+  /* ── Inter-stage connectors (L1 → L2, L2 → L3+) ── */
+  .sim__connector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 6px;
+    margin: 2px 0;
+    opacity: 0.45;
+    transition: opacity 0.3s ease;
+  }
+  .sim__connector-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--cream);
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .sim__connector-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink-quiet);
+  }
+  .sim__connector--fired {
+    opacity: 1;
+    animation: sim-connector-fire 0.8s ease-out;
+  }
+  .sim__connector--fired .sim__connector-icon {
+    animation: sim-connector-fire-icon 0.8s ease-out;
+  }
+  @keyframes sim-connector-fire {
+    0%   { color: var(--ink-quiet); }
+    25%  { color: var(--gold-deep); }
+    100% { color: var(--ink-quiet); }
+  }
+  @keyframes sim-connector-fire-icon {
+    0%, 100% { background: var(--ink); transform: scale(1); }
+    25%      { background: var(--gold-deep); transform: scale(1.18); }
+  }
+
+  /* ── L3+ Execution stage (mirrors L2 state pattern) ── */
+  .sim__step-3[data-step3-state="locked"] .load-arch__section-label {
+    color: var(--ink-quiet);
+    opacity: 0.55;
+  }
+  .sim__step-3[data-step3-state="locked"] .load-arch__items {
+    display: none;
+  }
+  .sim__step3-label-active { display: none; }
+  .sim__step-3[data-step3-state="active"] .sim__step3-label-locked { display: none; }
+  .sim__step-3[data-step3-state="active"] .sim__step3-label-active { display: inline; }
+  .sim__step-3[data-step3-state="active"] .load-arch__section-label {
+    opacity: 1;
+    color: var(--ink-quiet);
+    transition: opacity 0.4s ease, color 0.4s ease;
+  }
+  .sim__step-3[data-step3-state="active"] .load-arch__items {
     display: block;
   }
   .sim__loaded-items > li {
@@ -2388,14 +2473,14 @@
     gap: 20px;
     margin: 0;
   }
-  .anat-layout__prompt {
-    display: flex;
-    flex-direction: column;
+  .anat-layout__head {
+    margin-bottom: 8px;
   }
-  .anat-layout__center {
+  .anat-layout__below {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-top: 18px;
   }
   .anat-layout__figure {
     min-width: 0;
@@ -2502,28 +2587,34 @@
     75% { transform: translateX(3px); }
   }
   .anat-hint-btn {
+    position: absolute;
+    top: 12px;
+    right: 88px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 14px;
-    padding: 7px 12px;
+    gap: 5px;
+    padding: 3px 8px;
     font-family: var(--mono);
-    font-size: 11.5px;
+    font-size: 10px;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-quiet);
-    background: transparent;
+    background: var(--paper);
     border: 1px solid var(--rule);
-    border-radius: 4px;
+    border-radius: 3px;
     cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    z-index: 2;
+    line-height: 1.4;
   }
   .anat-hint-btn:hover:not(:disabled) {
-    border-color: var(--ink-quiet);
     color: var(--ink);
+    border-color: var(--ink-soft);
+    background: var(--paper);
   }
   .anat-hint-btn:focus-visible {
-    outline: 2px solid var(--gold);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
   .anat-hint-btn:disabled {
@@ -2533,6 +2624,8 @@
   .anat-hint-btn__icon {
     font-size: 13px;
     line-height: 1;
+    display: inline-block;
+    transform: translateY(-0.5px);
   }
   .anat-hotspot.hint-pulse {
     animation: anat-hint-pulse 2.4s ease-out;
@@ -4156,154 +4249,128 @@
   .cp-diag__fix-fb--wrong { border-left-color: var(--wrong); }
   .cp-diag__fix-fb strong { color: var(--correct); font-weight: 600; }
   .cp-diag__fix-fb--wrong strong { color: var(--wrong); }
-  .skill-levels {
-    margin: 32px 0;
-    padding: 28px 32px;
-    background: var(--paper);
+
+  /* === Cards layout: alternate for "Where each piece lives" === */
+  .skill-levels-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 24px 0 32px;
+  }
+  .skill-level-card {
     border: 1px solid var(--rule);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 4px 4px 0;
+    border-radius: 6px;
+    padding: 20px 24px;
+    background: var(--cream);
   }
-  .skill-levels h3 {
-    margin: 0 0 6px;
-    font-family: var(--display);
-    font-size: 22px;
-    font-weight: 500;
-    line-height: 1.25;
-    color: var(--ink);
-    letter-spacing: 0;
+  .skill-level-card__head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
   }
-  .skill-levels__lede {
-    margin: 0 0 22px;
-    font-size: 14.5px;
-    color: var(--ink-soft);
-    line-height: 1.6;
-  }
-  .skill-levels__lede strong { color: var(--ink); }
-  .skill-levels__table-wrap {
-    overflow-x: auto;
-  }
-  .skill-levels__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13.5px;
-    line-height: 1.55;
-  }
-  .skill-levels__table thead th {
+  .skill-level-card__badge {
     font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 600;
-    text-align: left;
-    padding: 10px 14px;
-    border-bottom: 1.5px solid var(--accent);
-    vertical-align: bottom;
-    white-space: nowrap;
-  }
-  .skill-levels__table tbody th {
-    padding: 16px 14px;
-    border-top: 1px solid var(--rule);
-    vertical-align: top;
-    text-align: left;
-    white-space: nowrap;
-    font-weight: 400;
-  }
-  .skill-levels__table tbody td {
-    padding: 16px 14px;
-    border-top: 1px solid var(--rule);
-    vertical-align: top;
-    color: var(--ink);
-  }
-  .skill-levels__table tbody tr:first-child th,
-  .skill-levels__table tbody tr:first-child td {
-    border-top: 0;
-  }
-  .skill-levels__table tbody td code {
-    font-size: 12px;
-    background: var(--cream-deep);
-    padding: 1px 5px;
-    border-radius: 2px;
-  }
-  .skill-levels__num {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
-    color: var(--accent);
+    font-size: 11px;
     font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 8px;
     background: rgba(13, 13, 13, 0.08);
-    padding: 3px 7px;
+    color: var(--accent);
     border-radius: 3px;
-    margin-right: 8px;
+    flex-shrink: 0;
   }
-  .skill-levels__name {
+  .skill-level-card__title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .skill-level-card__name {
+    font-size: 17px;
     font-weight: 600;
+    margin: 0;
     color: var(--ink);
+    letter-spacing: -0.005em;
   }
-  .skill-levels__stage {
-    display: block;
-    margin-top: 4px;
+  .skill-level-card__stage {
     font-family: var(--mono);
     font-size: 10.5px;
     font-weight: 500;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--gold-deep);
   }
-  @media (max-width: 700px) {
-    .skill-levels { padding: 20px 18px; }
-    .skill-levels__table thead {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-      white-space: nowrap;
-    }
-    .skill-levels__table,
-    .skill-levels__table tbody,
-    .skill-levels__table tr,
-    .skill-levels__table tbody th,
-    .skill-levels__table tbody td {
-      display: block;
-      width: 100%;
-    }
-    .skill-levels__table tbody tr {
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      margin-bottom: 14px;
-      background: var(--paper);
-    }
-    .skill-levels__table tbody tr:last-child { margin-bottom: 0; }
-    .skill-levels__table tbody th {
-      padding: 12px 14px;
-      background: var(--cream-deep);
-      border-radius: 4px 4px 0 0;
-      border: 0;
-    }
-    .skill-levels__table tbody td {
-      padding: 10px 14px 10px 110px;
-      border: 0;
-      border-top: 1px solid var(--rule);
-      position: relative;
-      min-height: 22px;
-    }
-    .skill-levels__table tbody td::before {
-      content: attr(data-label);
-      position: absolute;
-      left: 14px;
-      top: 10px;
-      font-family: var(--mono);
-      font-size: 9.5px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 600;
-      width: 88px;
-    }
+  .skill-level-card__props {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 10px 18px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
   }
+  .skill-level-card__row {
+    display: contents;
+  }
+  .skill-level-card__row dt {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-quiet);
+    padding-top: 3px;
+  }
+  .skill-level-card__row dd {
+    margin: 0;
+    color: var(--ink);
+  }
+  .skill-level-connector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 28px;
+    margin: 2px 0;
+  }
+  .skill-level-connector__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--cream);
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .skill-level-connector__label {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink-quiet);
+  }
+  @media (max-width: 700px) {
+    .skill-level-card { padding: 18px 16px; }
+    .skill-level-card__props {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .skill-level-card__row dt {
+      margin-top: 10px;
+      padding-top: 0;
+    }
+    .skill-level-card__row:first-of-type dt {
+      margin-top: 0;
+    }
+    .skill-level-connector { padding: 4px 12px; }
+  }
+
   .recap {
     padding-top: 56px;
     padding-bottom: 32px;
@@ -6382,7 +6449,7 @@
       </div>
       <div class="primer-card" role="listitem">
         <p class="primer-card__label">Where it lives</p>
-        <p class="primer-card__body">Saved to your ChatGPT account at <code>chatgpt.com/skills</code>. Available in every new chat from then on. No prompt library to maintain.</p>
+        <p class="primer-card__body">Saved to your ChatGPT account at <a href="https://chatgpt.com/skills" target="_blank" rel="noopener noreferrer"><code>chatgpt.com/skills</code></a>. Available in every new chat from then on. No prompt library to maintain.</p>
       </div>
       <div class="primer-card" role="listitem">
         <p class="primer-card__label">How it shows up</p>
@@ -6696,18 +6763,15 @@
     </div>
 
     <div class="checkpoint" data-cp="anat">
+      <button class="anat-hint-btn" type="button" data-anat-hint aria-label="Show me where this part is in the file"><span class="anat-hint-btn__icon" aria-hidden="true">&#x1F4A1;</span><span data-anat-hint-label>Hint</span></button>
       <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
       <div class="anat-layout">
-        <div class="anat-layout__prompt">
+        <div class="anat-layout__head">
           <div class="checkpoint__head">
             <span class="checkpoint__label">EXERCISE<span class="lxd-only-inline" style="text-transform: none; letter-spacing: 0; margin-left: 8px; opacity: 0.65;">· Anatomy hotspot</span></span>
             <span class="checkpoint__lo lxd-only-inline">TARGETS LO 1 + LO 2</span>
           </div>
-          <div class="anat-layout__center">
-            <p class="anat-prompt" data-anat-prompt aria-live="polite">Click the part of this <code>SKILL.md</code> file that holds the <span class="anat-target">name</span>.</p>
-            <button class="anat-hint-btn" type="button" data-anat-hint aria-label="Show me where this part is in the file"><span class="anat-hint-btn__icon" aria-hidden="true">&#x2197;</span><span data-anat-hint-label>Show me where</span></button>
-            <div class="cp-tally" role="status" aria-live="polite">YOUR SCORE &middot; <strong><span data-anat-score>0</span> of 4 found on first try</strong></div>
-          </div>
+          <p class="anat-prompt" data-anat-prompt aria-live="polite">Click the part of this <code>SKILL.md</code> file that holds the <span class="anat-target">name</span>.</p>
         </div>
 
 <div class="lxd-note">
@@ -6717,7 +6781,8 @@
   </div>
   <p><strong>4 click-tracked targets, immediate feedback, no penalty for retry.</strong> Anatomy is a verbal/declarative KC (recognize the four parts of a SKILL.md and where they live in the file). KLI's verbal-information principle says these need few practice trials, but they need <em>fast retrieval</em> in active context. The hotspot puts the learner inside a real SKILL.md and asks them to find each part by clicking, not name them in a vacuum. <strong>"On first try" wording in the score</strong> rewards retrieval but doesn't lock the question, so missed targets become teaching moments rather than failure events. Wrong-region clicks show targeted feedback ("That's the body, not the frontmatter") so the misconception that drove the wrong click is named.</p>
   <p><strong>Why hotspots not MCQs.</strong> An MCQ asking "which field holds the description?" tests recognition; the hotspot tests <em>localization</em>, same KC, more transfer. Mayer's spatial-contiguity: the answer space is the file itself.</p>
-  <p><strong>Hint mechanism for stuck learners.</strong> A <em>Show me where</em> button per target pulses the correct hotspot on click. Added after learner feedback that the resources target in particular was hard to locate without ever revealing where it lived. Using the hint sets <code>firstAttempt[target] = false</code> so the score reflects help-taking honestly without a separate "hint used" indicator. Productive struggle preserved by default for learners who don't need help; agency-with-honest-cost for those who do.</p>
+  <p><strong>Hint mechanism for stuck learners.</strong> A <em>Hint</em> button (top-right, paired with Reset) pulses the correct hotspot on click. Added after learner feedback that the resources target in particular was hard to locate without ever revealing where it lived. Using the hint sets <code>firstAttempt[target] = false</code> so the score reflects help-taking honestly without a separate "hint used" indicator. Productive struggle preserved by default for learners who don't need help; agency-with-honest-cost for those who do.</p>
+  <p><strong>Prompt above the diagram, score below.</strong> Instruction-first / progress-after follows the natural reading order of an exercise: the prompt frames what the learner is looking for, the diagram is the surface they search, and the running score gives feedback on each successful pick. The Hint and Reset controls sit at top-right as a paired-action affordance, both styled as compact mono pills.</p>
 </div>
         <div class="anat-layout__figure">
         <div class="anatomy" data-lxd-target="lxd-anatomy">
@@ -6810,6 +6875,10 @@
         <span class="lxd-callout__principle">KLI rule-recognition &middot; LO 2 setup</span>
       </aside>
     </div>
+        </div>
+
+        <div class="anat-layout__below">
+          <div class="cp-tally" role="status" aria-live="polite">YOUR SCORE &middot; <strong><span data-anat-score>0</span> of 4 found on first try</strong></div>
         </div>
       </div>
     </div>
@@ -7013,53 +7082,104 @@
 
     <h3>Where each piece lives.</h3>
 
-    <p>When you ask ChatGPT something, three things happen, in this order:</p>
-    <ol class="stage-list">
-      <li><strong>Discovery.</strong> ChatGPT scans the names and descriptions of every skill you've installed to see if any match.</li>
-      <li><strong>Activation.</strong> If one matches, that skill's full instructions load.</li>
-      <li><strong>Execution.</strong> ChatGPT follows those instructions, pulling in extra files (templates, scripts) only if the instructions reference them.</li>
-    </ol>
-    <p>This staged approach is called <strong>progressive disclosure</strong>, and it's why a workspace can hold dozens of skills cheaply: most stay cold until needed. The table below shows what loads at each stage, and where each piece you author belongs.</p>
+    <p>Skills load in three gated stages, a pattern called <strong>progressive disclosure</strong>. A workspace can hold dozens of skills cheaply because most stay cold until needed.</p>
 
     <p style="font-size: 13.5px; color: var(--ink-quiet); margin-top: -8px;"><em>A note on tokens:</em> tokens are roughly the units of text the model processes; ~100 tokens is about a sentence, 5,000 tokens is about 8 pages. Smaller numbers mean faster, cheaper responses.</p>
 
-    <div class="skill-levels">
-      <div class="skill-levels__table-wrap">
-        <table class="skill-levels__table" aria-label="The three levels of progressive disclosure">
-          <thead>
-            <tr>
-              <th scope="col">Level</th>
-              <th scope="col">When loaded</th>
-              <th scope="col">Token cost</th>
-              <th scope="col">Content</th>
-              <th scope="col">You author</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row"><span class="skill-levels__num">L1</span><span class="skill-levels__name">Metadata</span><span class="skill-levels__stage">Discovery</span></th>
-              <td data-label="When">Always loaded, for every available skill in the workspace</td>
-              <td data-label="Cost">~100 tokens per skill</td>
-              <td data-label="Content"><code>name</code> + <code>description</code> from frontmatter</td>
-              <td data-label="You author">The frontmatter</td>
-            </tr>
-            <tr>
-              <th scope="row"><span class="skill-levels__num">L2</span><span class="skill-levels__name">Instructions</span><span class="skill-levels__stage">Activation</span></th>
-              <td data-label="When">When the skill is triggered</td>
-              <td data-label="Cost">Under 5,000 tokens (recommended)</td>
-              <td data-label="Content">The <code>SKILL.md</code> body: the procedure</td>
-              <td data-label="You author">The instructions</td>
-            </tr>
-            <tr>
-              <th scope="row"><span class="skill-levels__num">L3+</span><span class="skill-levels__name">Resources</span><span class="skill-levels__stage">Execution</span></th>
-              <td data-label="When">As needed, only when the body cites them</td>
-              <td data-label="Cost">Pay only when cited</td>
-              <td data-label="Content">Files in <code>scripts/</code>, <code>references/</code>, <code>assets/</code></td>
-              <td data-label="You author">The bundled files</td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="skill-levels-cards">
+      <article class="skill-level-card">
+        <div class="skill-level-card__head">
+          <span class="skill-level-card__badge">L1</span>
+          <div class="skill-level-card__title">
+            <h4 class="skill-level-card__name">Metadata</h4>
+            <span class="skill-level-card__stage">Discovery</span>
+          </div>
+        </div>
+        <dl class="skill-level-card__props">
+          <div class="skill-level-card__row">
+            <dt>When loaded</dt>
+            <dd>Always loaded into context, for every available skill in the workspace</dd>
+          </div>
+          <div class="skill-level-card__row">
+            <dt>Token cost</dt>
+            <dd>~100 tokens per skill</dd>
+          </div>
+          <div class="skill-level-card__row">
+            <dt>Content</dt>
+            <dd><code>name</code> + <code>description</code> from frontmatter</dd>
+          </div>
+          <div class="skill-level-card__row">
+            <dt>You author</dt>
+            <dd>The frontmatter</dd>
+          </div>
+        </dl>
+      </article>
+
+      <div class="skill-level-connector">
+        <span class="skill-level-connector__icon" aria-hidden="true">&darr;</span>
+        <span class="skill-level-connector__label">if the skill's description matches the user's request</span>
       </div>
+
+      <article class="skill-level-card">
+        <div class="skill-level-card__head">
+          <span class="skill-level-card__badge">L2</span>
+          <div class="skill-level-card__title">
+            <h4 class="skill-level-card__name">Instructions</h4>
+            <span class="skill-level-card__stage">Activation</span>
+          </div>
+        </div>
+        <dl class="skill-level-card__props">
+          <div class="skill-level-card__row">
+            <dt>When loaded</dt>
+            <dd>When the skill is triggered</dd>
+          </div>
+          <div class="skill-level-card__row">
+            <dt>Token cost</dt>
+            <dd>Under 5,000 tokens (recommended)</dd>
+          </div>
+          <div class="skill-level-card__row">
+            <dt>Content</dt>
+            <dd>The <code>SKILL.md</code> body: the procedure</dd>
+          </div>
+          <div class="skill-level-card__row">
+            <dt>You author</dt>
+            <dd>The instructions</dd>
+          </div>
+        </dl>
+      </article>
+
+      <div class="skill-level-connector">
+        <span class="skill-level-connector__icon" aria-hidden="true">&darr;</span>
+        <span class="skill-level-connector__label">if the body cites a file</span>
+      </div>
+
+      <article class="skill-level-card">
+        <div class="skill-level-card__head">
+          <span class="skill-level-card__badge">L3+</span>
+          <div class="skill-level-card__title">
+            <h4 class="skill-level-card__name">Resources</h4>
+            <span class="skill-level-card__stage">Execution</span>
+          </div>
+        </div>
+        <dl class="skill-level-card__props">
+          <div class="skill-level-card__row">
+            <dt>When loaded</dt>
+            <dd>As needed, only when the body cites them</dd>
+          </div>
+          <div class="skill-level-card__row">
+            <dt>Token cost</dt>
+            <dd>Pay only when cited</dd>
+          </div>
+          <div class="skill-level-card__row">
+            <dt>Content</dt>
+            <dd>Files in <code>scripts/</code>, <code>references/</code>, <code>assets/</code></dd>
+          </div>
+          <div class="skill-level-card__row">
+            <dt>You author</dt>
+            <dd>The bundled files</dd>
+          </div>
+        </dl>
+      </article>
     </div>
 
 
@@ -7092,8 +7212,12 @@
       <div class="load-arch__region load-arch__region--context">
         <div class="load-arch__region-label">Context window</div>
         <div class="load-arch__panel load-arch__panel--context">
-          <div class="load-arch__section">
-            <div class="load-arch__section-label"><span class="load-arch__step-num">1</span>Discovery &middot; every available skill's metadata is always loaded in context</div>
+          <div class="load-arch__section sim__stage" data-stage="discovery">
+            <div class="load-arch__section-label">
+              <span class="sim__stage-badge">L1</span>
+              <span class="sim__stage-name">Discovery</span>
+              <span class="sim__stage-detail">every available skill's metadata is always loaded in context</span>
+            </div>
             <ul class="load-arch__items sim__metadata">
             <li class="sim__meta-item" role="button" tabindex="0" data-meta="vendor-quote-comparator" data-correct="false">
               <code>vendor-quote-comparator</code> &middot; <em>compares vendor quotes on cost, terms, and delivery and outputs a ranking</em>
@@ -7107,14 +7231,35 @@
           </ul>
         </div>
 
-        <div class="load-arch__section sim__step-2" data-step2-state="locked">
+        <div class="sim__connector" data-connector="l1-l2">
+          <span class="sim__connector-icon" aria-hidden="true">&darr;</span>
+          <span class="sim__connector-label">if the description matches the user's request</span>
+        </div>
+
+        <div class="load-arch__section sim__stage sim__step-2" data-stage="activation" data-step2-state="locked">
           <div class="load-arch__section-label">
-            <span class="load-arch__step-num">2</span>
-            <span class="sim__step2-label-locked">Awaiting activation&hellip;</span>
-            <span class="sim__step2-label-active">Activation &middot; matched skill's content loads</span>
+            <span class="sim__stage-badge">L2</span>
+            <span class="sim__stage-name">Activation</span>
+            <span class="sim__stage-detail sim__step2-label-locked">awaiting&hellip;</span>
+            <span class="sim__stage-detail sim__step2-label-active">matched skill's body loads</span>
           </div>
-            <ul class="load-arch__items sim__loaded-items"></ul>
+            <ul class="load-arch__items sim__loaded-items sim__loaded-body"></ul>
           </div>
+
+        <div class="sim__connector" data-connector="l2-l3">
+          <span class="sim__connector-icon" aria-hidden="true">&darr;</span>
+          <span class="sim__connector-label">if the body cites a file</span>
+        </div>
+
+        <div class="load-arch__section sim__stage sim__step-3" data-stage="execution" data-step3-state="locked">
+          <div class="load-arch__section-label">
+            <span class="sim__stage-badge">L3+</span>
+            <span class="sim__stage-name">Execution</span>
+            <span class="sim__stage-detail sim__step3-label-locked">awaiting&hellip;</span>
+            <span class="sim__stage-detail sim__step3-label-active">cited files load</span>
+          </div>
+          <ul class="load-arch__items sim__loaded-items sim__loaded-resources"></ul>
+        </div>
         </div>
       </div>
 
@@ -7164,7 +7309,7 @@
       <p><strong>Distractors discriminable with LO 1 reasoning alone.</strong> An earlier draft used distractors that were sophisticated description anti-patterns (two-jobs-in-one, capability-list-without-WHEN, off-target-WHEN), which required LO 3 vocabulary the learner had not yet met. That worked as forward-reference in theory but in practice asked learners to recognize patterns the lesson hadn't named, and the feedback had to lean on LO 3 terminology mid-§1 to explain wrong picks. Replaced with surface-word-match distractors: each wrong option shares a salient word with the prompt but represents a clearly different job (transcript-cleanup shares "transcript" but cleans rather than summarizes; call-prep-helper shares "call" but is for upcoming, not past, calls; vendor-quote-comparator shares "vendor"+"quote" but compares rather than declines; feedback-softener shares the softening tone but lives in a different domain). The discrimination is now LO-1-grade: <em>word match isn't enough; the agent has to match the full situation.</em> A novice using only the loading-mechanism mental model can pick correctly, and the wrong-pick feedback names the trap (surface pull) and the discrimination (full situation match) without forward-referencing description-authoring vocabulary.</p>
       <p><strong>Distractor item-writing rigor.</strong> Both trials audited against the 19 item-writing flaws (Tarrant et al. 2006). After trimming the option text to discrimination-critical content only (Mayer coherence principle: omit gratuitous detail), Trial 1 lengths: 100/110/101 chars; Trial 2 lengths: 99/108/107 chars. Both pass IWF #4 (length cue, within 10%), #12 (word repeat from stem to correct only), and the broader convergence/parallelism checks. Adversarial pre-audit: a test-wise learner can't pick by length, by surface-word-match alone, or by structural pattern; the only reliable path to the correct answer is engaging with the situation match. Distractors represent real misconceptions a novice would plausibly hold (the cognitive pull of word-match overlap, the assumption that domain-share = situation-match). Ellipses dropped from option text because they suggested hidden content the lesson never tested; real production skill descriptions are this short.</p>
       <p><strong>Visual hierarchy of context vs. disk panels.</strong> Earlier drafts placed labels inside each panel as compound headers ("CONTEXT WINDOW · click the matching metadata" / "ON DISK · all skills available"). Two problems per Mayer: (1) compound labels split attention between location-naming and instruction-giving, and (2) the labels-inside-boxes pattern made disk and context look like peer columns rather than diagram regions with distinct semantic roles. Per the spatial contiguity principle, related text and visuals should sit close to each other; per the coherence principle, redundant scaffolding should be omitted. Fix: labels lifted OUTSIDE the boxes as small mono-caps captions above each region. The boxes contain only their content (active context state on the left, on-disk inventory on the right). The conceptual contrast is carried by border style (solid dark vs. dashed lighter) without making one region feel subordinate. The lede above sets the spatial semantics once ("The agent decides what to load <em>in context</em>, on the left. Disk, on the right, is where files live until they're pulled in.") so the captions don't have to repeat it.</p>
-      <p><strong>Column proportions: context wider, disk narrower.</strong> Earlier draft had grid columns at 1.25fr/0.75fr (context 62%, disk 38%). When the activation animation fired, stage 2's loaded items added vertical content under stage 1's discovery items, while the disk panel stayed at its initial height (folder inventory). Result: context wrapped descriptions to 3-4 lines each and required vertical scroll to see the full animation; disk had lots of slack. New proportions 1.65fr/0.55fr (context 75%, disk 25%) plus tighter disk padding and smaller disk font. Trade-off: disk folder names like <code>meeting-notes-summarizer/</code> sometimes wrap across two lines, which is acceptable for a reference panel where the inventory just needs to be readable, not optimally laid out. The activation animation now fits in a single screen unit on desktop, so the cognitive arc (discovery → match → activation → execution) reads as one continuous beat.</p>
+      <p><strong>Column proportions: context wider, disk narrower.</strong> Earlier drafts had grid columns at 1.25fr/0.75fr (context 62%, disk 38%). When the activation animation fired, stage 2's loaded items added vertical content under stage 1's discovery items while the disk panel stayed at its initial height (folder inventory). Result: context wrapped descriptions to 3-4 lines each and required vertical scroll to see the full animation; disk had lots of slack. Current proportions 1.5fr/0.8fr (context 65%, disk 35%) plus tighter disk padding and smaller disk font. The disk panel keeps just enough width that the <em>not cited this call</em> badge on <code>scripts/</code> fits without wrapping at the narrowest non-collapsed viewport. Trade-off: disk folder names like <code>meeting-notes-summarizer/</code> sometimes wrap across two lines, which is acceptable for a reference panel where the inventory just needs to be readable, not optimally laid out. The activation animation now fits in a single screen unit on desktop, so the cognitive arc (L1 discovery &rarr; match &rarr; L2 activation &rarr; L3+ execution) reads as one continuous beat.</p>
       <p><strong>Click affordance: chevron + accent strip + tiny action prompt.</strong> Earlier draft had clickable metadata items styled like content cards (border, hover state, cursor: pointer). Affordance was insufficient: a scrolling reader might not realize the cards were tappable, particularly since this is the first interactive moment in the lesson. Three reinforcing signals added at rest: (a) left accent strip in the lesson's accent color (signals "interactive"); (b) chevron (›) at the right edge in accent color, with hover micro-animation translating it 2px right (signals "tap me / forward action"); (c) action prompt directly attached to the user prompt (Mayer spatial contiguity: instruction sits with the situation it applies to). Three small cues compounding to make the affordance unambiguous without text-heavy instruction. After a card is matched, the chevron is suppressed (the card no longer represents a primary action).</p>
       <p><strong>Staged reveal &middot; eliminates the "static diagram" failure mode.</strong> Earlier draft showed the full apparatus from the start: prompt at top, "CONTEXT WINDOW" label above a dark-bordered box with three click cards inside, "1 DISCOVERY · EVERY SKILL'S METADATA LOADS AT STARTUP" stage label, a grayed "2 AWAITING ACTIVATION..." section, and a fully-rendered on-disk panel with three folder structures on the right. Engagement signal: roughly 8 in 10 learners did not interact, treating the simulation as a documentation diagram to read rather than an activity to perform. Diagnosis: <em>too much explanatory scaffolding visible at the decision moment</em>. The numbered stage labels, the "AWAITING ACTIVATION" framing, and the on-disk panel all read as documentary content. The interactive cards were a small island inside a sea of passive diagram text. Worse, Mayer spatial contiguity was violated: the user prompt sat at top, the "Pick the description that matches the user's prompt" instruction was buried below stage labels inside the context-window panel.</p>
       <p><strong>Fix: progressive disclosure at the UI level.</strong> Initial state shows only what the decision requires: the user prompt, an action instruction immediately attached to it ("Pick the matching skill → watch what loads"), and three clickable cards. Everything else, the CONTEXT WINDOW frame, the discovery stage label, the awaiting-activation state, the on-disk panel, is hidden via <code>data-staging="initial"</code>. On correct click, <code>data-staging="revealed"</code> fires and the surrounding frame fades in alongside the existing animation cascade (matched badge → matched skill highlights on disk → stage 2 activates → body + cited resources load → uncited resource gets the "not cited this call" badge → feedback). The full teaching content arrives <em>as the answer</em> to "what just happened when I picked the match," not as static apparatus to study before acting. Wrong picks keep <code>data-staging="initial"</code>, so the reveal animation is a reward for engaging correctly, not for engaging at all. This is Bjork's failure-then-success sequencing applied at the UI level.</p>
@@ -7208,7 +7353,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       <p><strong>FIND IT wide-treatment layout fix.</strong> The anatomy hotspot activity uses a negative-margin trick to extend beyond the prose container width (it needs to fit a SKILL.md visual + prompt panel side-by-side). The old breakpoint <code>@media (min-width: 1180px)</code> applied a 1140px-wide treatment using <code>margin: calc(50% - 570px)</code>. The math assumed the page was centered without a fixed sidebar. With the 280px course sidebar open, the math placed the left edge at viewport x=210 (behind the sidebar) and the right edge at x=1350 (past the viewport, causing horizontal scroll). The unified activity badge made this latent bug visible because the dark pill sat partially behind the sidebar. Fix: bump the breakpoint to <code>@media (min-width: 1280px)</code> and cap the wide treatment at 960px, so the activity fits within <code>viewport - sidebar - safe-padding</code>. At smaller viewports the activity falls back to prose width (720px). Verified across 1024px / 1080px / 1180px / 1280px / 1366px / 1440px: no overflow, no badge clipping behind sidebar at any size.</p>
       <p><strong>Click target lives in the context window, NOT on disk.</strong> Earlier draft had the click target on the on-disk skill folders. That implied the agent reaches into disk to pick a skill, the wrong mental model. The activation decision actually happens <em>in context</em>: all available skills' metadata is always in context, the agent reads the metadata <em>in context</em>, and matches the prompt against the metadata <em>in context</em>. Only after the match does the agent pull content from disk. Moving the click target to the context-window metadata makes the interaction match the runtime model. This was a pedagogically critical fix.</p>
       <p><strong>Single trial, budget-conscious.</strong> Earlier draft had 2 trials for KLI variable-application coverage. One trial is enough here because (a) the simulation visual is identical on every run, so the marginal teaching from a second trial is small, and (b) the packaging-copy anti-pattern is folded into the single trial as one of three distractors (<code>transcript-tool</code>) so resistance to that pattern is still tested. Saved ~3 minutes of learner time without losing coverage. KLI variable-application is reinforced by the workshop's NAME/WHAT/WHEN decisions and KC Q4, which test the same underlying KC across different surface forms.</p>
-      <p><strong>Animation timing (Mayer's segmenting + signaling).</strong> Sequential reveal at 200/500/800/1100/1200/1600/2000/2300ms after correct click. The 2000ms beat is the most pedagogically valuable: <code>scripts/parse.py</code> stays on disk with a "not cited this call" badge. Progressive disclosure becomes visible as cost savings, the non-load moment is the teaching, not the load moments.</p>
+      <p><strong>Animation timing (Mayer's segmenting + signaling).</strong> Sequential reveal at 200/500/800/1100/1200/1500/1700/2100/2400ms after correct click. The 800ms and 1500ms beats are the gate moments: the L1&rarr;L2 connector fires when the matched skill's body activates, the L2&rarr;L3+ connector fires when a body-cited file pulls into context. The 2100ms beat is the most pedagogically valuable: <code>scripts/parse.py</code> stays on disk with a "not cited this call" badge. Progressive disclosure becomes visible as cost savings; the non-load moment is the teaching, not the load moments. The three stages (L1 Discovery, L2 Activation, L3+ Execution) and their gate-conditioned connectors mirror the cards layout in &sect;1.3 above so the static reference and the runtime simulation share the same visual spine.</p>
       <p><strong>Distractor design &middot; item-writing rigor.</strong> All three options are in-domain (meeting-related) and length-balanced so the learner can't pattern-match on length or topic alone. Earlier draft used <code>code-reviewer</code> as one distractor, but that violated the item-writing rule against length-as-cue (the correct answer was 2x longer than either wrong option) and let the learner reject it on topic alone without engaging with the LO 3 mechanics. New distractor set: one correct (<code>meeting-notes-summarizer</code>, proper WHEN clause + trigger phrases in user-situation language), one capability-list distractor (<code>meeting-helper</code>, describes what the skill <em>can do</em> instead of <em>when</em> to use it; tests resistance to capability-checklist authoring), one packaging-copy distractor (<code>transcript-tool</code>, describes what the skill <em>is</em>; tests resistance to packaging-copy authoring; intentionally short to surface that vague descriptions fail). Three distinct LO 3 failure modes, all in-domain, none rejectable on length or topic.</p>
     </div>
 
@@ -8047,10 +8192,10 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       if (target && hintUsed[target]) {
         // Already revealed for this target, keep disabled and labeled
         hintBtn.disabled = true;
-        if (hintLabelEl) hintLabelEl.textContent = 'Hint shown';
+        if (hintLabelEl) hintLabelEl.textContent = 'Shown';
       } else {
         hintBtn.disabled = false;
-        if (hintLabelEl) hintLabelEl.textContent = 'Show me where';
+        if (hintLabelEl) hintLabelEl.textContent = 'Hint';
       }
     }
 
@@ -8136,7 +8281,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         }
         // Disable button and update label
         hintBtn.disabled = true;
-        if (hintLabelEl) hintLabelEl.textContent = 'Hint shown';
+        if (hintLabelEl) hintLabelEl.textContent = 'Shown';
       });
     }
 
@@ -8280,12 +8425,13 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
     const T = {
       SELECT: 200,            // clicked metadata gets `is-matched`
       HIGHLIGHT_DISK: 500,    // matched skill on disk gets highlighted
-      ACTIVATE_STEP_2: 800,   // step 2 transitions to active
-      LOAD_BODY: 1100,        // SKILL.md body slides into loaded list
+      ACTIVATE_STEP_2: 800,   // step 2 transitions to active + L1→L2 connector fires
+      LOAD_BODY: 1100,        // SKILL.md body slides into L2 loaded list
       MARK_FILE_BODY: 1200,   // SKILL.md file in on-disk view marked is-loaded
-      LOAD_RESOURCE: 1600,    // references/template.md slides in (cited)
-      MARK_NOT_LOADED: 2000,  // scripts/parse.py marked is-disk-only
-      SHOW_FEEDBACK: 2300     // feedback panel + complete
+      ACTIVATE_STEP_3: 1500,  // step 3 transitions to active + L2→L3+ connector fires
+      LOAD_RESOURCE: 1700,    // references/template.md slides into L3+ loaded list
+      MARK_NOT_LOADED: 2100,  // scripts/parse.py marked is-disk-only
+      SHOW_FEEDBACK: 2400     // feedback panel + complete
     };
 
     function resetTrial(trial) {
@@ -8317,9 +8463,22 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       const step2 = trial.querySelector('.sim__step-2');
       if (step2) {
         step2.dataset.step2State = "locked";
-        const list = step2.querySelector('.sim__loaded-items');
-        if (list) list.innerHTML = '';
+        const bodyList = step2.querySelector('.sim__loaded-items');
+        if (bodyList) bodyList.innerHTML = '';
       }
+
+      // Reset step 3 to locked
+      const step3 = trial.querySelector('.sim__step-3');
+      if (step3) {
+        step3.dataset.step3State = "locked";
+        const resList = step3.querySelector('.sim__loaded-items');
+        if (resList) resList.innerHTML = '';
+      }
+
+      // Reset connectors
+      trial.querySelectorAll('.sim__connector').forEach(c => {
+        c.classList.remove('sim__connector--fired');
+      });
 
       // Hide feedback
       const fb = trial.querySelector('[data-feedback]');
@@ -8385,15 +8544,21 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         });
       }, T.HIGHLIGHT_DISK);
 
-      // 800ms: step 2 transitions to active
+      // 800ms: step 2 transitions to active + L1→L2 connector fires
       setTimeout(() => {
         const step2 = trial.querySelector('.sim__step-2');
         if (step2) step2.dataset.step2State = "active";
+        const conn = trial.querySelector('.sim__connector[data-connector="l1-l2"]');
+        if (conn) {
+          conn.classList.remove('sim__connector--fired');
+          void conn.offsetWidth;
+          conn.classList.add('sim__connector--fired');
+        }
       }, T.ACTIVATE_STEP_2);
 
-      // 1100ms: SKILL.md body slides into loaded list
+      // 1100ms: SKILL.md body slides into L2 loaded list
       setTimeout(() => {
-        const list = trial.querySelector('.sim__loaded-items');
+        const list = trial.querySelector('.sim__step-2 .sim__loaded-items');
         if (list) {
           list.insertAdjacentHTML('beforeend', `
             <li class="is-loaded">
@@ -8414,9 +8579,21 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         if (f) f.classList.add('is-loaded');
       }, T.MARK_FILE_BODY);
 
-      // 1600ms: cited resource (template.md) loads into context + on disk
+      // 1500ms: step 3 transitions to active + L2→L3+ connector fires
       setTimeout(() => {
-        const list = trial.querySelector('.sim__loaded-items');
+        const step3 = trial.querySelector('.sim__step-3');
+        if (step3) step3.dataset.step3State = "active";
+        const conn = trial.querySelector('.sim__connector[data-connector="l2-l3"]');
+        if (conn) {
+          conn.classList.remove('sim__connector--fired');
+          void conn.offsetWidth;
+          conn.classList.add('sim__connector--fired');
+        }
+      }, T.ACTIVATE_STEP_3);
+
+      // 1700ms: cited resource (template.md) loads into L3+ context + marked on disk
+      setTimeout(() => {
+        const list = trial.querySelector('.sim__step-3 .sim__loaded-items');
         const matchedSkill = trial.querySelector(`.load-arch__skill[data-skill="${skillKey}"]`);
         const f = matchedSkill ? matchedSkill.querySelector('[data-file="template"]') : null;
         const fileName = f ? f.textContent.trim() : 'references/file.md';
@@ -8437,7 +8614,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         }
       }, T.LOAD_RESOURCE);
 
-      // 2000ms: NON-LOAD moment for parse.py, pedagogically critical
+      // 2100ms: NON-LOAD moment for parse.py, pedagogically critical
       setTimeout(() => {
         const matchedSkill = trial.querySelector(`.load-arch__skill[data-skill="${skillKey}"]`);
         const f = matchedSkill ? matchedSkill.querySelector('[data-file="parse"]') : null;
@@ -8447,7 +8624,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         }
       }, T.MARK_NOT_LOADED);
 
-      // 2300ms: feedback + mark complete + re-enable clicks for exploration
+      // 2400ms: feedback + mark complete + re-enable clicks for exploration
       setTimeout(() => {
         const fb = trial.querySelector('[data-feedback]');
         const fbContent = feedback[skillKey];
