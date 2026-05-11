@@ -819,9 +819,9 @@
   .lxd-callout::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: -74px;
-    width: 70px;
+    top: var(--lxd-arrow-y, 50%);
+    left: calc(-1 * var(--lxd-line, 24px));
+    width: var(--lxd-line, 24px);
     height: 1px;
     background: var(--annotation);
     opacity: 0.88;
@@ -829,8 +829,8 @@
   .lxd-callout::after {
     content: '';
     position: absolute;
-    top: calc(50% - 5px);
-    left: -80px;
+    top: calc(var(--lxd-arrow-y, 50%) - 5px);
+    left: calc(-1 * var(--lxd-line, 24px) - 6px);
     width: 0;
     height: 0;
     border-top: 5px solid transparent;
@@ -852,11 +852,11 @@
   }
   body.lxd-mode .lxd-callout[data-lxd-side="left"]::before {
     left: auto;
-    right: -74px;
+    right: calc(-1 * var(--lxd-line, 24px));
   }
   body.lxd-mode .lxd-callout[data-lxd-side="left"]::after {
     left: auto;
-    right: -80px;
+    right: calc(-1 * var(--lxd-line, 24px) - 6px);
     border-right: 0;
     border-left: 8px solid var(--annotation);
   }
@@ -981,10 +981,9 @@
     display: none;
   }
   
-  /* Responsive fallback: when the viewport is too narrow for side-gutter
-     callouts (< 1280px or when the expanded sidebar consumes too much width),
-     callouts revert to inline display under their anchor. */
-  @media (max-width: 1279px) {
+  /* Responsive fallback: on mobile-sized screens, annotations revert to inline
+     display under their anchors so they cannot cover the controls. */
+  @media (max-width: 899px) {
     body.lxd-mode .lxd-callout {
       position: static;
       width: auto;
@@ -1977,22 +1976,10 @@
     border: 1px solid var(--rule);
     border-radius: 4px;
     padding: 12px 14px;
-    padding-right: 90px;
     margin-bottom: 16px;
     font-size: 13.5px;
     color: var(--ink-soft);
     font-style: italic;
-  }
-  /* On narrow screens, prompts are 1-2 lines and can't comfortably absorb
-     90px of right-padding. Move the reset button above the prompt instead. */
-  @media (max-width: 600px) {
-    .sim__prompt {
-      padding-right: 14px;
-      margin-top: 36px;
-    }
-    .sim__trial > .assess-reset {
-      top: 0;
-    }
   }
   .sim__prompt strong {
     font-style: normal;
@@ -2485,17 +2472,8 @@
   .anat-layout__figure {
     min-width: 0;
     width: 100%;
-    /* Cap height: the SVG is tall (full SKILL.md file) so on smaller viewports
-       it pushed the score and supporting controls far down the page. The figure
-       now scrolls within itself, keeping the prompt above and score below
-       always visible. */
-    max-height: 70vh;
-    min-height: 360px;
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
-    /* Subtle scroll cue at the bottom edge to signal more content below the fold. */
-    border-bottom: 1px dashed var(--rule);
-    padding-bottom: 8px;
   }
   .anat-layout__figure .anatomy {
     width: 100%;
@@ -5109,9 +5087,15 @@
   .question__head {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 8px;
-    padding-right: 80px;
+    padding-right: 0;
+  }
+  .question__head .assess-reset {
+    position: static;
+    margin-left: auto;
+    flex: none;
   }
   .question__num {
     font-family: var(--mono);
@@ -5138,7 +5122,7 @@
     color: var(--ink);
     margin-bottom: 18px;
     line-height: 1.5;
-    padding-right: 80px;
+    padding-right: 0;
   }
   .answers { list-style: none; padding: 0; margin: 0; }
   .answers li { margin-bottom: 10px; }
@@ -6044,7 +6028,7 @@
   }
 </style>
 </head>
-<body>
+<body class="has-sidebar sidebar-collapsed">
 
 <a class="skip-link" href="#main">Skip to main content</a>
 
@@ -6054,9 +6038,9 @@
      are listed without expanded sub-section TOCs).
      Current page (1.1 Author your first Skill) is highlighted with
      live section position; other pages show metadata only. -->
-<aside class="course-nav" id="courseNav" aria-label="Module 1: Authoring Skills navigation" data-state="expanded">
+<aside class="course-nav" id="courseNav" aria-label="Module 1: Authoring Skills navigation" data-state="collapsed">
   <div class="course-nav__rail">
-    <button class="course-nav__toggle" id="courseNavToggle" type="button" aria-label="Collapse module navigation" aria-expanded="true" aria-controls="courseNav">
+    <button class="course-nav__toggle" id="courseNavToggle" type="button" aria-label="Expand module navigation" aria-expanded="false" aria-controls="courseNav">
       <svg class="course-nav__toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="11 17 6 12 11 7"></polyline>
         <polyline points="18 17 13 12 18 7"></polyline>
@@ -6186,7 +6170,7 @@
 
 <!-- HERO -->
 <main id="main">
-<section class="hero" aria-labelledby="hero-title" data-lxd-target="lxd-buildfirst">
+<section class="hero" aria-labelledby="hero-title">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-buildfirst"]'>
   <div class="lxd-callout__label">Architecture &middot; build-first</div>
   <p>Pre-build content is kept to a brief primer; the workshop is the lesson's first substantive interaction, so concept teaching follows experiential anchor.</p>
@@ -6198,12 +6182,12 @@
       <span class="hero__meta-item">40 minutes</span>
     </div>
 
-    <div class="lxd-alignment" data-lxd-target="lxd-alignment">
-      <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-alignment"]'>
+    <div class="lxd-alignment">
+      <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-alignment"]' data-lxd-flow="inline">
         <div class="lxd-callout__label">LO alignment</div>
         <p>Each objective maps to a Knowledge Component type and the practice opportunities that target it.</p>
       </aside>
-      <div class="lxd-alignment__head">
+      <div class="lxd-alignment__head" data-lxd-target="lxd-alignment">
         <h2 class="lxd-alignment__title">Learning Objective Alignment Map</h2>
         <div class="lxd-alignment__meta">Designer view &middot; 14-check model</div>
       </div>
@@ -6445,14 +6429,14 @@
      OpenAI Academy's existing video asset as orientation rather than primary
      content, signals the lesson is a redesign layered on top of, not a
      replacement for, the existing Academy material. -->
-<section id="section-orientation" style="padding-top: 32px; padding-bottom: 32px;" data-lxd-target="lxd-orientation">
+<section id="section-orientation" style="padding-top: 32px; padding-bottom: 32px;">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-orientation"]'>
   <div class="lxd-callout__label">Orientation video &middot; UDL Principle of Representation</div>
   <p>The video orients quickly; the lesson's value comes from applied practice.</p>
   <span class="lxd-callout__principle">UDL Representation &middot; Multi-modal layering &middot; Repurpose, don't replace</span>
 </aside>
   <div class="container">
-    <figure class="orient-video">
+    <figure class="orient-video" data-lxd-target="lxd-orientation">
       <div class="orient-video__frame">
         <iframe src="https://player.vimeo.com/video/1166414134?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Skills"></iframe>
       </div>
@@ -6461,7 +6445,7 @@
   </div>
 </section>
 
-<section id="section-skill-primer" style="padding-top: 0; padding-bottom: 40px;" data-lxd-target="lxd-primer">
+<section id="section-skill-primer" style="padding-top: 0; padding-bottom: 40px;">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-primer"]'>
   <div class="lxd-callout__label">Pre-training &middot; anchor before the build</div>
   <p>Pre-training anchors the mental model so the workshop teaches procedure, not concept.</p>
@@ -6469,7 +6453,7 @@
 </aside>
   <div class="container">
     <p class="primer__lede">Four things to know before you author one.</p>
-    <div class="primer-grid" role="list" aria-label="Four things to know about skills">
+    <div class="primer-grid" role="list" aria-label="Four things to know about skills" data-lxd-target="lxd-primer">
       <div class="primer-card" role="listitem">
         <p class="primer-card__label">When to make one</p>
         <p class="primer-card__body">If you find yourself explaining the same workflow to ChatGPT over and over, that's a skill waiting to be written.</p>
@@ -6493,7 +6477,7 @@
 <section id="section-build-your-skill" style="padding-bottom: 32px;">
   <div class="container">
     <div class="lab">
-      <div class="lab__header">
+      <div class="lab__header" data-lxd-target="lxd-buildfirst">
         <span class="checkpoint__label">LAB<span class="lxd-only-inline" style="text-transform: none; letter-spacing: 0; margin-left: 8px; opacity: 0.65;">· Design + build in ChatGPT skill-creator</span></span>
         <h2 class="lab__title">Build your first skill.</h2>
       </div>
@@ -6507,7 +6491,7 @@
           <h3 id="section-writing-descriptions">Design YOUR skill for a real workflow.</h3>
 
     <!-- PERSONALIZED WORKSHOP, apply LO 3 to a skill the learner will actually use -->
-    <div class="apply-block" aria-label="Design your skill workshop" data-lxd-target="lxd-workshop-chips">
+    <div class="apply-block" aria-label="Design your skill workshop">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-workshop-chips"]'>
   <div class="lxd-callout__label">Workshop · variable application</div>
   <p>Role and skill-type choices support 33 starter paths and role-relevant diagnostic surfaces.</p>
@@ -6516,7 +6500,7 @@
       <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
       <p class="apply-block__lede">Pick a workflow from your job, something you currently re-explain to the agent every time you ask. We'll suggest a real starter for a skill in your role.</p>
 
-      <div class="reflect__personalize">
+      <div class="reflect__personalize" data-lxd-target="lxd-workshop-chips">
         <div class="reflect__chip-group" data-step="role">
           <div class="reflect__chip-step">
             <span class="reflect__chip-step-num">1</span>
@@ -6609,7 +6593,7 @@
            workshop verdict reveals (third correct decision lands), at which
            point Steps 02 and 03 reveal in one fade-in beat. -->
 
-      <div class="build-gated" data-build-gated data-lxd-target="lxd-build-gated">
+      <div class="build-gated" data-build-gated>
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-build-gated"]'>
   <div class="lxd-callout__label">Forcing function &middot; gated reveal</div>
   <p>Gated reveal keeps the workflow self-paced while preserving a clear production path.</p>
@@ -6617,7 +6601,7 @@
 </aside>
 
         <!-- Step 02, Have ChatGPT create your skill -->
-        <div class="step">
+        <div class="step" data-lxd-target="lxd-build-gated">
           <div class="step__num">02</div>
         <div class="step__body">
           <h3>Have ChatGPT create your skill</h3>
@@ -6816,7 +6800,7 @@
 </div>
         <div class="anat-layout__figure">
         <div class="anatomy" data-lxd-target="lxd-anatomy">
-      <svg viewBox="20 0 1020 920" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="anatomy-title anatomy-desc" style="width: 100%; height: auto; display: block;">
+      <svg viewBox="20 0 1020 790" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="anatomy-title anatomy-desc" style="width: 100%; height: auto; display: block;">
         <title id="anatomy-title">Anatomy of a skill</title>
         <desc id="anatomy-desc">Diagram of a SKILL.md file showing four labeled regions on the right side: NAME and DESCRIPTION in the frontmatter (top), INSTRUCTIONS and RESOURCES in the body (bottom). Each label has a leader line pointing to its location in the file.</desc>
         <defs>
@@ -6829,78 +6813,78 @@
         <rect x="40" y="14" width="120" height="28" rx="4" fill="#0D0D0D"/>
         <text x="56" y="34" font-family="JetBrains Mono, monospace" font-size="14" fill="#E8E2D2" letter-spacing="0.5">SKILL.md</text>
 
-        <!-- File body, y=42 to y=892 (height=850, fits expanded description content) -->
-        <rect x="40" y="42" width="600" height="850" rx="6" fill="#0D0D0D" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <rect x="40" y="42" width="600" height="850" fill="#0D0D0D"/>
+        <!-- File body, y=42 to y=762 (height=720, compact full-file view) -->
+        <rect x="40" y="42" width="600" height="720" rx="6" fill="#0D0D0D" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <rect x="40" y="42" width="600" height="720" fill="#0D0D0D"/>
 
-        <!-- Frontmatter region, y=42 to y=372 (height=330, fits expanded description) -->
-        <rect x="40" y="42" width="600" height="330" fill="rgba(255,255,255,0.025)"/>
-        <line x1="40" y1="372" x2="640" y2="372" stroke="rgba(255,255,255,0.10)" stroke-width="1" stroke-dasharray="3 3"/>
+        <!-- Frontmatter region, y=42 to y=328 (height=286, fits expanded description) -->
+        <rect x="40" y="42" width="600" height="286" fill="rgba(255,255,255,0.025)"/>
+        <line x1="40" y1="328" x2="640" y2="328" stroke="rgba(255,255,255,0.10)" stroke-width="1" stroke-dasharray="3 3"/>
 
-        <!-- Frontmatter content, fs 20, expanded description models WHAT + WHEN + trigger phrases -->
-        <text x="62" y="82" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">---</text>
-        <text x="62" y="120" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8B96B">name:</text>
-        <text x="138" y="120" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">meeting-notes-summarizer</text>
-        <text x="62" y="160" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8B96B">description:</text>
-        <text x="208" y="160" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">Turn raw meeting</text>
-        <text x="62" y="190" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">  transcripts or notes into a structured</text>
-        <text x="62" y="220" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">  summary with decisions, owners, and</text>
-        <text x="62" y="250" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">  dates. Use when the user pastes</text>
-        <text x="62" y="280" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">  meeting notes or asks to recap a call</text>
-        <text x="62" y="310" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">  or summarize a meeting.</text>
-        <text x="62" y="350" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">---</text>
+        <!-- Frontmatter content, compacted without removing fields -->
+        <text x="62" y="80" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">---</text>
+        <text x="62" y="113" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8B96B">name:</text>
+        <text x="132" y="113" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">meeting-notes-summarizer</text>
+        <text x="62" y="149" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8B96B">description:</text>
+        <text x="198" y="149" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">Turn raw meeting</text>
+        <text x="62" y="176" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">  transcripts or notes into a structured</text>
+        <text x="62" y="203" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">  summary with decisions, owners, and</text>
+        <text x="62" y="230" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">  dates. Use when the user pastes</text>
+        <text x="62" y="257" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">  meeting notes or asks to recap a call</text>
+        <text x="62" y="284" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">  or summarize a meeting.</text>
+        <text x="62" y="316" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">---</text>
 
-        <!-- Body content, shifted down to accommodate expanded description, starts at y=410 -->
-        <text x="62" y="410" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2"># Meeting notes summarizer</text>
-        <text x="62" y="450" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">Produce a tight, scannable recap</text>
-        <text x="62" y="480" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">of a meeting…</text>
+        <!-- Body content, compacted to keep the full anatomy visible without a nested scroller -->
+        <text x="62" y="372" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2"># Meeting notes summarizer</text>
+        <text x="62" y="408" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2" opacity="0.75">Produce a tight, scannable recap</text>
+        <text x="62" y="433" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2" opacity="0.75">of a meeting…</text>
 
-        <text x="62" y="540" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2">## How to produce the summary</text>
-        <text x="62" y="580" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">1. Read the entire input first…</text>
-        <text x="62" y="610" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">2. Identify participants…</text>
-        <text x="62" y="640" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">3. Extract three sections, using</text>
-        <text x="62" y="670" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">   the template at</text>
-        <text x="92" y="700" font-family="JetBrains Mono, monospace" font-size="20" fill="#DDA47A">references/template.md</text>
+        <text x="62" y="490" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2">## How to produce the summary</text>
+        <text x="62" y="526" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2" opacity="0.75">1. Read the entire input first…</text>
+        <text x="62" y="552" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2" opacity="0.75">2. Identify participants…</text>
+        <text x="62" y="578" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2" opacity="0.75">3. Extract three sections, using</text>
+        <text x="62" y="604" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2" opacity="0.75">   the template at</text>
+        <text x="92" y="630" font-family="JetBrains Mono, monospace" font-size="18" fill="#DDA47A">references/template.md</text>
 
-        <text x="62" y="770" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2">## Output rules</text>
-        <text x="62" y="810" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">- Keep it under 200 words.</text>
-        <text x="62" y="840" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">- Preserve names, dates, numbers.</text>
-        <text x="62" y="870" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">- Flag uncertainty with "Possibly:".</text>
+        <text x="62" y="680" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2">## Output rules</text>
+        <text x="62" y="712" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2" opacity="0.75">- Keep it under 200 words.</text>
+        <text x="62" y="738" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2" opacity="0.75">- Preserve names, dates, numbers.</text>
+        <text x="62" y="758" font-family="JetBrains Mono, monospace" font-size="18" fill="#E8E2D2" opacity="0.75">- Flag uncertainty with "Possibly:".</text>
 
         <!-- ── ANNOTATIONS, main label fs 28 + italic sublabel fs 16 ── -->
         <g class="anat-label" data-region="name">
-        <line x1="640" y1="120" x2="680" y2="120" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
-        <text x="690" y="128" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">① NAME</text>
-        <text x="690" y="150" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">lowercase, hyphenated identifier</text>
+        <line x1="640" y1="113" x2="680" y2="113" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
+        <text x="690" y="121" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">① NAME</text>
+        <text x="690" y="143" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">lowercase, hyphenated identifier</text>
         </g>
 
         <g class="anat-label" data-region="description">
-        <line x1="640" y1="235" x2="680" y2="235" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
-        <text x="690" y="243" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">② DESCRIPTION</text>
-        <text x="690" y="265" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">what + when, with trigger phrases</text>
+        <line x1="640" y1="220" x2="680" y2="220" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
+        <text x="690" y="228" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">② DESCRIPTION</text>
+        <text x="690" y="250" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">what + when, with trigger phrases</text>
         </g>
 
         <g class="anat-label" data-region="instructions">
-        <line x1="640" y1="590" x2="680" y2="590" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
-        <text x="690" y="598" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">③ INSTRUCTIONS</text>
-        <text x="690" y="620" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">the procedure ChatGPT follows</text>
+        <line x1="640" y1="536" x2="680" y2="536" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
+        <text x="690" y="544" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">③ INSTRUCTIONS</text>
+        <text x="690" y="566" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">the procedure ChatGPT follows</text>
         </g>
 
         <g class="anat-label" data-region="resources">
-        <line x1="640" y1="700" x2="680" y2="700" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
-        <text x="690" y="708" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">④ RESOURCES</text>
-        <text x="690" y="730" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">files the body cites</text>
+        <line x1="640" y1="630" x2="680" y2="630" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
+        <text x="690" y="638" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">④ RESOURCES</text>
+        <text x="690" y="660" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">files the body cites</text>
         </g>
 
         <!-- ── HOTSPOTS, full file width, instructions covers full body ── -->
-        <rect class="anat-hotspot" data-region="name" x="40" y="98" width="600" height="42" tabindex="0" role="button" aria-label="Possible name location"/>
-        <rect class="anat-hotspot" data-region="description" x="40" y="140" width="600" height="210" tabindex="0" role="button" aria-label="Possible description location"/>
-        <rect class="anat-hotspot" data-region="instructions" x="40" y="372" width="600" height="520" tabindex="0" role="button" aria-label="Possible instructions location"/>
-        <rect class="anat-hotspot" data-region="resources" x="80" y="678" width="556" height="40" tabindex="0" role="button" aria-label="Possible resources location"/>
+        <rect class="anat-hotspot" data-region="name" x="40" y="92" width="600" height="36" tabindex="0" role="button" aria-label="Possible name location"/>
+        <rect class="anat-hotspot" data-region="description" x="40" y="132" width="600" height="176" tabindex="0" role="button" aria-label="Possible description location"/>
+        <rect class="anat-hotspot" data-region="instructions" x="40" y="328" width="600" height="434" tabindex="0" role="button" aria-label="Possible instructions location"/>
+        <rect class="anat-hotspot" data-region="resources" x="80" y="610" width="556" height="36" tabindex="0" role="button" aria-label="Possible resources location"/>
 
         <!-- Region labels at file's right edge -->
         <text x="628" y="62" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#DDA47A" opacity="0.7" letter-spacing="1.2" text-anchor="end">FRONTMATTER</text>
-        <text x="628" y="395" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#DDA47A" opacity="0.7" letter-spacing="1.2" text-anchor="end">BODY</text>
+        <text x="628" y="350" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#DDA47A" opacity="0.7" letter-spacing="1.2" text-anchor="end">BODY</text>
       </svg>
       <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-anatomy"]'>
         <div class="lxd-callout__label">Anatomy &middot; recognition KC</div>
@@ -6930,8 +6914,8 @@
       <h4>Place each piece of content in the right folder.</h4>
       <p class="checkpoint__instruction">Drag a card to a zone, or tap a card then a zone. Wrong placements bounce back with a hint.</p>
 
-      <div class="cp-tree" data-lxd-target="lxd-cp-tree">
-<aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-cp-tree"]'>
+      <div class="cp-tree">
+<aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-cp-folder"]' data-lxd-prefer-side="left">
   <div class="lxd-callout__label">Placement &middot; production KC</div>
   <p>Drag-and-drop checks content classification, not just vocabulary recall.</p>
   <span class="lxd-callout__principle">KLI variable-application &middot; Bjork productive struggle</span>
@@ -6947,7 +6931,7 @@
         </div>
 
         <div>
-          <div class="cp-tree__folder">
+          <div class="cp-tree__folder" data-lxd-target="lxd-cp-folder">
             <div class="cp-tree__folder-name">meeting-notes-summarizer/</div>
             <div class="cp-tree__zone" tabindex="0" role="button" aria-label="Level 1 Metadata drop zone, press Enter to place selected card here" data-tier="t1">
               <div class="cp-tree__zone-header">
@@ -7222,6 +7206,7 @@
      the agent reads metadata; clicking on disk would suggest "the disk
      decides which skill fires," which is the wrong mental model. -->
 <div class="sim" data-sim>
+  <button class="assess-reset" type="button" aria-label="Reset trial to start over"><span class="assess-reset__icon" aria-hidden="true">&#x21BB;</span>Reset</button>
   <div class="sim__head">
     <span class="checkpoint__label">SIMULATION<span class="lxd-only-inline" style="text-transform: none; letter-spacing: 0; margin-left: 8px; opacity: 0.65;">· Progressive-disclosure walkthrough</span></span>
     <span class="checkpoint__lo lxd-only-inline">TARGETS LO 1</span>
@@ -7230,8 +7215,6 @@
   
 
   <div class="sim__trial" data-trial="2" data-state="awaiting" data-staging="initial" data-correct-skill="vendor-decline-writer">
-    <button class="assess-reset" type="button" aria-label="Reset trial to start over"><span class="assess-reset__icon" aria-hidden="true">&#x21BB;</span>Reset</button>
-
     <div class="sim__prompt-block">
       <div class="sim__prompt"><strong>User:</strong> "this vendor wants to give us a quote for a thing we don't need, can you help me say no nicely?"</div>
     </div>
@@ -7397,11 +7380,11 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
 <section>
   <div class="container">
     <div class="checkpoint checkpoint--mcq question" data-correct="b">
-      <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
       <div class="checkpoint__head question__head">
         <span class="checkpoint__label">KNOWLEDGE CHECK<span class="lxd-only-inline" style="text-transform: none; letter-spacing: 0; margin-left: 8px; opacity: 0.65;">· LO 1 application MCQ</span></span>
         <span class="checkpoint__lo lxd-only-inline">TARGETS LO 1</span>
         <div class="question__status lxd-only-inline" role="status" aria-live="polite">UNANSWERED</div>
+        <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
       </div>
       <div class="question__prompt">A workspace has 12 skills installed. A user asks ChatGPT, "Can you help me write a polite decline to this vendor pitch?" Which of the following is true at the moment ChatGPT decides what to do?</div>
       <ul class="answers">
@@ -7440,8 +7423,8 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
      practicing failure-mode discrimination, the same pattern applies to
      the learner's own skill. Single integrative scenario; three sub-items
      locked individually, no order required. -->
-<section id="section-diagnose" data-lxd-target="lxd-diag">
-<aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-diag"]'>
+<section id="section-diagnose">
+<aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-diag-panel"]'>
   <div class="lxd-callout__label">Diagnostic &middot; failure-then-name</div>
   <p>Failure cases connect authoring choices to supportable, real-world troubleshooting.</p>
   <span class="lxd-callout__principle">Bjork failure-then-name &middot; LO 4 KC &middot; 11 role variants</span>
@@ -7455,7 +7438,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       <h2 id="diag-title" class="diag__title">Diagnose failures.</h2>
       <p class="diag__lede" data-diag-lede>The three layers you just placed, description, body, resources, are also the three places a skill can fail. The symptom tells you which one. You'll diagnose someone else's skill here, then carry the same pattern back to your own when it misbehaves. Three colleagues tried Sam's <code>weekly-update-drafter</code> skill (a communications skill that turns rough bullet points into the team's standard weekly update). For each result, decide which layer Sam needs to edit, the same call you'll make next time your own skill produces something wrong.</p>
 
-      <ol class="diag__items">
+      <ol class="diag__items" data-lxd-target="lxd-diag-panel">
         <li class="diag__item" data-correct="resources" data-diag-id="1" data-lxd-target="lxd-resources-case">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-resources-case"]'>
   <div class="lxd-callout__label">Resources case &middot; 100% resources-only</div>
@@ -7533,15 +7516,15 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
 
 <div class="drop-rule">· · ·</div>
 <!-- SKILL CHECK -->
-<section id="section-knowledge-check" data-lxd-target="lxd-kc">
-<aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-kc"]'>
+<section id="section-knowledge-check">
+<aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-kc-panel"]'>
   <div class="lxd-callout__label">Knowledge check &middot; retrieval pass</div>
   <p>Final MCQs measure transfer across Bloom levels with misconception-based distractors audited for item-writing flaws.</p>
   <span class="lxd-callout__principle">Retrieval practice (Roediger &amp; Karpicke) &middot; Mager Criterion check &middot; Tarrant 19-IWF rubric</span>
 </aside>
   <div class="container">
     <div class="quiz">
-      <div class="quiz__header">
+      <div class="quiz__header" data-lxd-target="lxd-kc-panel">
         <span class="checkpoint__label">KNOWLEDGE CHECK<span class="lxd-only-inline" style="text-transform: none; letter-spacing: 0; margin-left: 8px; opacity: 0.65;">· 4-MCQ retrieval pass</span></span>
         <h2 class="quiz__title">Check your understanding.</h2>
         <p style="margin: 6px 0 0; font-size: 14px; color: var(--ink-quiet);">Four questions. Take your time, this isn't graded.</p>
@@ -7561,10 +7544,10 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   <p>Targets LO 1 (mental model). Removed the "discovery" keyword from the stem after audit caught it telegraphing the answer; reframed as "before that decision is made." 19-IWF: 0 flagged, 0 actual minor risks (validator's K-type flag is a false positive: "name and description" = single conceptual unit).</p>
   <span class="lxd-callout__principle">19-IWF audit clean &middot; Bloom recall</span>
 </aside>
-        <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
         <div class="question__head">
           <div class="question__num">QUESTION 01<span class="lxd-only-inline"> &middot; RECALL &middot; TARGETS LO 1</span></div>
           <div class="question__status lxd-only-inline" role="status" aria-live="polite">UNANSWERED</div>
+          <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
         </div>
         <div class="question__prompt">ChatGPT is about to decide whether to use your <code>meeting-notes-summarizer</code> skill for a user's request. Before that decision is made, which content from your skill is loaded into context?</div>
         <ul class="answers">
@@ -7590,10 +7573,10 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   <p>Replaced over-broad distractor C with a verbose-description trap (WHEN signals buried in 326 chars of expository padding). New C is the <em>longest</em> option; correct B is mid-length at 152 chars. Length-as-cue heuristic now points to a <em>wrong</em> answer, neutralizing IWF #4.</p>
   <span class="lxd-callout__principle">IWF #4 length cue &middot; LO 3 application</span>
 </aside>
-        <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
         <div class="question__head">
           <div class="question__num">QUESTION 02<span class="lxd-only-inline"> &middot; APPLICATION &middot; TARGETS LO 3</span></div>
           <div class="question__status lxd-only-inline" role="status" aria-live="polite">UNANSWERED</div>
+          <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
         </div>
         <div class="question__prompt">A teammate's skill has the description: <code>"skill for converting CSV data into clean, formatted reports."</code> They've shipped it but it's almost never activating. Which rewrite gives the biggest gain?</div>
         <ul class="answers">
@@ -7614,10 +7597,10 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       </div>
 
       <div class="question" data-correct="b">
-        <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
         <div class="question__head">
           <div class="question__num">QUESTION 03<span class="lxd-only-inline"> &middot; ANALYSIS &middot; TARGETS LO 2</span></div>
           <div class="question__status lxd-only-inline" role="status" aria-live="polite">UNANSWERED</div>
+          <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
         </div>
         <div class="question__prompt">Your skill activates correctly on the right requests, but each time it's used the response feels noticeably slower than before you added it. Where do you look first?</div>
         <ul class="answers">
@@ -7638,10 +7621,10 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       </div>
 
       <div class="question" data-correct="c">
-        <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
         <div class="question__head">
           <div class="question__num">QUESTION 04<span class="lxd-only-inline"> &middot; EVALUATION &middot; TARGETS LO 3</span></div>
           <div class="question__status lxd-only-inline" role="status" aria-live="polite">UNANSWERED</div>
+          <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
         </div>
         <div class="question__prompt">A teammate proposes a single skill called <code>meeting-toolkit</code> that summarizes notes, drafts a follow-up email, <em>and</em> creates Linear tickets for action items. What's the deepest critique?</div>
         <ul class="answers">
@@ -7880,10 +7863,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
     });
   })();
 
-  function markInteracted(key) {
-    const normalized = normalizeKey(key);
-    if (interacted.has(normalized)) return;
-    interacted.add(normalized);
+  function syncProgressUI() {
     const n = interacted.size;
     const pct = (n / TOTAL_CHECKS) * 100;
     // Header counter + bar fill
@@ -7909,16 +7889,29 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
     }
   }
 
+  function setInteractedKeys(keys) {
+    interacted.clear();
+    (keys || []).forEach(key => interacted.add(normalizeKey(key)));
+    syncProgressUI();
+  }
+
+  function markInteracted(key) {
+    const normalized = normalizeKey(key);
+    if (interacted.has(normalized)) return;
+    interacted.add(normalized);
+    syncProgressUI();
+  }
+
   // ── ASSESSMENT RESET DISPATCHER ────────────────────────────────────────
   // Each .assess-reset button dispatches a custom 'assess-reset' event on
   // its parent assessment container (.checkpoint, .question, or .apply-block).
   // Components listen for the event in their existing setup IIFEs and clear
-  // their own visual state + scores. The global progress meter is preserved
-  //, engagement happened, the reset is exploratory, not invalidating.
+  // their own visual state + scores. Manual resets preserve the global
+  // progress meter because engagement happened; reset is exploratory.
   document.querySelectorAll('.assess-reset').forEach(btn => {
     btn.addEventListener('click', e => {
       e.preventDefault();
-      const container = btn.parentElement;
+      const container = btn.closest('.question, .checkpoint, .apply-block, .diag, .sim__trial, .sim') || btn.parentElement;
       if (container) {
         container.dispatchEvent(new CustomEvent('assess-reset'));
       }
@@ -7934,7 +7927,11 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   //      element on the page so the LXD reviewer sees a "successfully engaged
   //      learner" state: chips selected, decisions correct, MCQs answered,
   //      hotspot regions revealed, drag-and-drop completed, diagnostic
-  //      answered, simulation trial run. Reset on toggle OFF.
+  //      answered, simulation trial run.
+  //
+  // LXD is a temporary worked-example overlay. If the learner already has
+  // progress, we snapshot it, show the complete 14/14 example, then restore
+  // the learner's prior checks and visible choices when LXD is toggled off.
   //
   // The worked example uses Marketing role + Process skill type as the chosen
   // surface. Why this combo: marketing is the most universally recognizable
@@ -7944,16 +7941,339 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   const viewToggle = document.getElementById('viewToggle');
   const WORKED_ROLE = 'marketing';
   const WORKED_TYPE = 'process';
+  const WORKED_PROGRESS_KEYS = [
+    'apply-decision:name',
+    'apply-decision:what',
+    'apply-decision:when',
+    'mcq:0',
+    'mcq:1',
+    'mcq:2',
+    'mcq:3',
+    'mcq:4',
+    'anat',
+    'cp3',
+    'diag-item-1',
+    'diag-item-2',
+    'diag-item-3',
+    'sim-trial-2'
+  ];
   let workedApplied = false;
+  let lxdRestoreSnapshot = null;
+  let lxdRunId = 0;
 
   function findCorrectAnswer(scope) {
     // Return the .answer in scope whose data-correct="true". Used for MCQ auto-pick.
     return scope.querySelector('.answer[data-correct="true"]');
   }
 
+  function compactText(text) {
+    return (text || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function selectedChipValue(group) {
+    const chip = document.querySelector(`.reflect__chips[data-group="${group}"] .reflect__chip[aria-checked="true"]`);
+    return chip ? chip.dataset.value : null;
+  }
+
+  function decisionOptionValue(option) {
+    if (!option) return null;
+    const clone = option.cloneNode(true);
+    clone.querySelectorAll('.apply-decision__option-why').forEach(el => el.remove());
+    return compactText(clone.textContent);
+  }
+
+  function clickChip(group, value) {
+    if (!value) return;
+    const chip = document.querySelector(`.reflect__chips[data-group="${group}"] .reflect__chip[data-value="${value}"]`);
+    if (chip && chip.getAttribute('aria-checked') !== 'true') chip.click();
+  }
+
+  function clickDecisionOption(field, value) {
+    if (!field || !value) return;
+    const decision = document.querySelector(`.apply-decision[data-decision="${field}"]`);
+    if (!decision) return;
+    const match = Array.from(decision.querySelectorAll('.apply-decision__option'))
+      .find(option => decisionOptionValue(option) === value);
+    if (match) match.click();
+  }
+
+  function captureWorkshopState() {
+    return {
+      role: selectedChipValue('role'),
+      type: selectedChipValue('type'),
+      decisions: Array.from(document.querySelectorAll('.apply-decision')).map(decision => {
+        const options = Array.from(decision.querySelectorAll('.apply-decision__option'));
+        const visible = options.find(option => {
+          const why = option.querySelector('.apply-decision__option-why');
+          return why && !why.hasAttribute('hidden');
+        });
+        const correct = options.find(option => option.dataset.correct === 'true');
+        return {
+          field: decision.dataset.decision,
+          visibleValue: decisionOptionValue(visible),
+          correctValue: decisionOptionValue(correct),
+          solved: !!(correct && correct.classList.contains('correct'))
+        };
+      })
+    };
+  }
+
+  function captureQuestionStates() {
+    return Array.from(document.querySelectorAll('.question')).map(q => ({
+      completed: q.classList.contains('completed'),
+      status: compactText(q.querySelector('.question__status')?.textContent || ''),
+      triedIncorrect: Array.from(q.querySelectorAll('.answer.tried-incorrect')).map(a => a.dataset.letter),
+      triedCorrect: Array.from(q.querySelectorAll('.answer.tried-correct')).map(a => a.dataset.letter),
+      visibleFeedback: q.querySelector('.option-feedback.show')?.dataset.for || null
+    }));
+  }
+
+  function captureSimState() {
+    const trial = document.querySelector('.sim__trial');
+    if (!trial) return null;
+    const feedback = trial.querySelector('[data-feedback]');
+    const step2 = trial.querySelector('.sim__step-2');
+    const step3 = trial.querySelector('.sim__step-3');
+    return {
+      state: trial.dataset.state || '',
+      staging: trial.dataset.staging || '',
+      meta: Array.from(trial.querySelectorAll('.sim__meta-item')).map(m => ({
+        key: m.dataset.meta,
+        className: m.className,
+        tabindex: m.getAttribute('tabindex'),
+        ariaDisabled: m.getAttribute('aria-disabled'),
+        matchTag: !!m.querySelector('.load-arch__match-tag')
+      })),
+      skills: Array.from(trial.querySelectorAll('.load-arch__skill')).map(skill => ({
+        key: skill.dataset.skill,
+        className: skill.className,
+        files: Array.from(skill.querySelectorAll('[data-file]')).map(file => ({
+          key: file.dataset.file,
+          className: file.className,
+          notes: Array.from(file.querySelectorAll('.load-arch__file-note')).map(note => note.outerHTML)
+        }))
+      })),
+      step2: {
+        state: step2 ? (step2.dataset.step2State || '') : '',
+        html: step2 ? (step2.querySelector('.sim__loaded-items')?.innerHTML || '') : ''
+      },
+      step3: {
+        state: step3 ? (step3.dataset.step3State || '') : '',
+        html: step3 ? (step3.querySelector('.sim__loaded-items')?.innerHTML || '') : ''
+      },
+      connectors: Array.from(trial.querySelectorAll('.sim__connector')).map(conn => ({
+        key: conn.dataset.connector,
+        className: conn.className
+      })),
+      feedback: feedback ? {
+        className: feedback.className,
+        html: feedback.innerHTML,
+        show: feedback.hasAttribute('data-show')
+      } : null
+    };
+  }
+
+  function captureLearnerState() {
+    return {
+      interactedKeys: Array.from(interacted),
+      workshop: captureWorkshopState(),
+      questions: captureQuestionStates(),
+      anatomyFound: Array.from(document.querySelectorAll('.anat-hotspot.found')).map(h => h.dataset.region),
+      anatomyScore: document.querySelector('[data-anat-score]')?.textContent || '0',
+      cp3Placements: Array.from(document.querySelectorAll('.cp-card.placed')).map(card => ({
+        content: card.dataset.content,
+        target: card.dataset.target
+      })),
+      cp3Score: document.querySelector('[data-cp-score="cp3"]')?.textContent || '0',
+      diag: Array.from(document.querySelectorAll('.diag__item')).map(item => ({
+        id: item.dataset.diagId,
+        correctLayer: item.querySelector('.diag__choice[data-state="correct"]')?.dataset.layer || null,
+        wrongLayers: Array.from(item.querySelectorAll('.diag__choice[data-state="wrong"]')).map(btn => btn.dataset.layer)
+      })),
+      sim: captureSimState()
+    };
+  }
+
+  function dispatchAssessmentReset(container) {
+    if (container) container.dispatchEvent(new CustomEvent('assess-reset'));
+  }
+
+  function resetAllInteractiveSurfaces() {
+    dispatchAssessmentReset(document.querySelector('.apply-block'));
+    document.querySelectorAll('.checkpoint[data-cp="anat"]').forEach(dispatchAssessmentReset);
+    document.querySelectorAll('.cp-tree').forEach(tree => {
+      dispatchAssessmentReset(tree.closest('.checkpoint'));
+    });
+    dispatchAssessmentReset(document.querySelector('.sim'));
+    dispatchAssessmentReset(document.querySelector('.diag'));
+    document.querySelectorAll('.question').forEach(dispatchAssessmentReset);
+    setInteractedKeys([]);
+  }
+
+  function restoreWorkshopState(snapshot) {
+    if (!snapshot) return;
+    clickChip('role', snapshot.role);
+    clickChip('type', snapshot.type);
+    (snapshot.decisions || []).forEach(decision => {
+      const shouldShowDifferentWrong = decision.solved &&
+        decision.visibleValue &&
+        decision.correctValue &&
+        decision.visibleValue !== decision.correctValue;
+      if (shouldShowDifferentWrong) clickDecisionOption(decision.field, decision.correctValue);
+      if (decision.visibleValue) clickDecisionOption(decision.field, decision.visibleValue);
+      if (!decision.visibleValue && decision.solved && decision.correctValue) {
+        clickDecisionOption(decision.field, decision.correctValue);
+        const decisionEl = document.querySelector(`.apply-decision[data-decision="${decision.field}"]`);
+        decisionEl?.querySelectorAll('.apply-decision__option-why').forEach(why => {
+          why.setAttribute('hidden', '');
+        });
+      }
+    });
+  }
+
+  function restoreQuestionStates(states) {
+    const questions = Array.from(document.querySelectorAll('.question'));
+    questions.forEach((q, idx) => {
+      const state = states && states[idx];
+      if (!state) return;
+      const wrongs = state.triedIncorrect || [];
+      const correct = (state.triedCorrect || [])[0];
+      wrongs.forEach(letter => q.querySelector(`.answer[data-letter="${letter}"]`)?.click());
+      if (correct) q.querySelector(`.answer[data-letter="${correct}"]`)?.click();
+      q.querySelectorAll('.option-feedback').forEach(fb => {
+        fb.classList.toggle('show', !!state.visibleFeedback && fb.dataset.for === state.visibleFeedback);
+      });
+      q.classList.toggle('completed', !!state.completed);
+      const statusEl = q.querySelector('.question__status');
+      if (statusEl && state.status) statusEl.textContent = state.status;
+    });
+  }
+
+  function restoreAnatomyState(found, score) {
+    const wanted = new Set(found || []);
+    ['name', 'description', 'instructions', 'resources'].forEach(region => {
+      if (!wanted.has(region)) return;
+      const hotspot = document.querySelector(`.anat-hotspot[data-region="${region}"]`);
+      hotspot?.dispatchEvent(new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      }));
+    });
+    const scoreEl = document.querySelector('[data-anat-score]');
+    if (scoreEl && score !== undefined) scoreEl.textContent = score;
+  }
+
+  function restoreCp3State(placements, score) {
+    (placements || []).forEach(placement => {
+      const card = Array.from(document.querySelectorAll('.cp-card'))
+        .find(candidate => candidate.dataset.content === placement.content && !candidate.classList.contains('placed'));
+      const zone = document.querySelector(`.cp-tree__zone[data-tier="${placement.target}"]`);
+      if (card && zone) {
+        card.click();
+        zone.click();
+      }
+    });
+    const scoreEl = document.querySelector('[data-cp-score="cp3"]');
+    if (scoreEl && score !== undefined) scoreEl.textContent = score;
+  }
+
+  function restoreDiagState(items) {
+    (items || []).forEach(itemState => {
+      const item = document.querySelector(`.diag__item[data-diag-id="${itemState.id}"]`);
+      if (!item) return;
+      (itemState.wrongLayers || []).forEach(layer => {
+        item.querySelector(`.diag__choice[data-layer="${layer}"]`)?.click();
+      });
+      if (itemState.correctLayer) {
+        item.querySelector(`.diag__choice[data-layer="${itemState.correctLayer}"]`)?.click();
+      }
+    });
+  }
+
+  function restoreSimState(snapshot) {
+    if (!snapshot) return;
+    const trial = document.querySelector('.sim__trial');
+    if (!trial) return;
+    trial.dataset.state = snapshot.state || 'awaiting';
+    trial.dataset.staging = snapshot.staging || 'initial';
+
+    (snapshot.meta || []).forEach(record => {
+      const meta = trial.querySelector(`.sim__meta-item[data-meta="${record.key}"]`);
+      if (!meta) return;
+      meta.className = record.className || 'load-arch__card sim__meta-item';
+      if (record.tabindex === null) meta.removeAttribute('tabindex');
+      else meta.setAttribute('tabindex', record.tabindex);
+      if (record.ariaDisabled === null) meta.removeAttribute('aria-disabled');
+      else meta.setAttribute('aria-disabled', record.ariaDisabled);
+      meta.querySelectorAll('.load-arch__match-tag').forEach(tag => tag.remove());
+      if (record.matchTag) {
+        meta.insertAdjacentHTML('beforeend', '<span class="load-arch__match-tag">match</span>');
+      }
+    });
+
+    (snapshot.skills || []).forEach(record => {
+      const skill = trial.querySelector(`.load-arch__skill[data-skill="${record.key}"]`);
+      if (!skill) return;
+      skill.className = record.className || 'load-arch__skill';
+      (record.files || []).forEach(fileRecord => {
+        const file = skill.querySelector(`[data-file="${fileRecord.key}"]`);
+        if (!file) return;
+        file.querySelectorAll('.load-arch__file-note').forEach(note => note.remove());
+        file.className = fileRecord.className || 'load-arch__file';
+        (fileRecord.notes || []).forEach(noteHtml => {
+          file.insertAdjacentHTML('beforeend', ' ' + noteHtml);
+        });
+      });
+    });
+
+    const step2 = trial.querySelector('.sim__step-2');
+    if (step2) {
+      step2.dataset.step2State = snapshot.step2?.state || 'locked';
+      const list = step2.querySelector('.sim__loaded-items');
+      if (list) list.innerHTML = snapshot.step2?.html || '';
+    }
+    const step3 = trial.querySelector('.sim__step-3');
+    if (step3) {
+      step3.dataset.step3State = snapshot.step3?.state || 'locked';
+      const list = step3.querySelector('.sim__loaded-items');
+      if (list) list.innerHTML = snapshot.step3?.html || '';
+    }
+    (snapshot.connectors || []).forEach(record => {
+      const connector = trial.querySelector(`.sim__connector[data-connector="${record.key}"]`);
+      if (connector) connector.className = record.className || 'sim__connector';
+    });
+    const fb = trial.querySelector('[data-feedback]');
+    if (fb && snapshot.feedback) {
+      fb.className = snapshot.feedback.className || 'sim__feedback';
+      fb.innerHTML = snapshot.feedback.html || '';
+      fb.toggleAttribute('data-show', !!snapshot.feedback.show);
+    }
+  }
+
+  function restoreLearnerState(snapshot) {
+    if (!snapshot) {
+      resetAllInteractiveSurfaces();
+      return;
+    }
+    resetAllInteractiveSurfaces();
+    restoreWorkshopState(snapshot.workshop);
+    restoreQuestionStates(snapshot.questions);
+    restoreAnatomyState(snapshot.anatomyFound, snapshot.anatomyScore);
+    restoreCp3State(snapshot.cp3Placements, snapshot.cp3Score);
+    restoreDiagState(snapshot.diag);
+    restoreSimState(snapshot.sim);
+    setInteractedKeys(snapshot.interactedKeys || []);
+    setTimeout(positionCallouts, 80);
+  }
+
   function applyWorkedExample() {
     if (workedApplied) return;
+    lxdRestoreSnapshot = captureLearnerState();
+    resetAllInteractiveSurfaces();
     workedApplied = true;
+    setInteractedKeys(WORKED_PROGRESS_KEYS);
+    const runId = ++lxdRunId;
     // 1. Workshop chips: role then type. selectChip handles cascading reveal.
     const roleChip = document.querySelector(`.reflect__chip[data-value="${WORKED_ROLE}"]`);
     const typeChip = document.querySelector(`.reflect__chip[data-value="${WORKED_TYPE}"]`);
@@ -7963,6 +8283,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
     // 2. After type is picked, decisions render asynchronously. Schedule a
     //    follow-up to click the correct option in each decision list.
     setTimeout(() => {
+      if (!workedApplied || runId !== lxdRunId) return;
       document.querySelectorAll('.apply-decision').forEach(decision => {
         const correctOpt = decision.querySelector('.apply-decision__option[data-correct="true"]');
         if (correctOpt) correctOpt.click();
@@ -8016,35 +8337,30 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   function clearWorkedExample() {
     if (!workedApplied) return;
     workedApplied = false;
-    // Fastest reset: reload the page so all state (chips, MCQs, hotspots,
-    // drag-and-drop, diagnostic, sim, progress counter) returns to the
-    // pristine learner-view starting state. Soft-reset of every component
-    // would require per-component teardown logic that doesn't currently
-    // exist; a reload is one line and guarantees correctness.
-    window.location.reload();
+    lxdRunId += 1;
+    const snapshot = lxdRestoreSnapshot;
+    lxdRestoreSnapshot = null;
+    restoreLearnerState(snapshot);
   }
 
   function positionCallouts() {
-    // Pin each visible annotation near its anchor, with a small vertical gap
-    // so adjacent annotations do not overlap in the side gutter.
+    // Pin each visible annotation to its own anchor. Earlier gutter stacking
+    // pushed past annotations into the current viewport while scrolling, which
+    // made arrows point at unrelated lesson content.
     const vw = document.documentElement.clientWidth;
     const sidebarCollapsed = document.body.classList.contains('sidebar-collapsed');
-    const useGutter = vw >= 1280 && (sidebarCollapsed || vw >= 1520);
+    const useAnchored = vw >= 900 && (sidebarCollapsed || vw >= 1520);
     const callouts = Array.from(document.querySelectorAll('.lxd-callout'))
       .map(callout => {
-      const sel = callout.dataset.lxdAnchor;
-      const anchor = sel ? document.querySelector(sel) : null;
-      const top = anchor ? anchor.getBoundingClientRect().top + window.scrollY : 0;
-      return { callout, anchor, top };
+        const sel = callout.dataset.lxdAnchor;
+        const anchor = sel ? document.querySelector(sel) : null;
+        return { callout, anchor };
       })
-      .sort((a, b) => a.top - b.top);
-    const floor = window.scrollY + 90;
-    const lastBottom = { left: floor, right: floor };
 
-    callouts.forEach(({ callout, anchor, top }) => {
+    callouts.forEach(({ callout, anchor }) => {
       const isVisible = document.body.classList.contains('lxd-mode') && getComputedStyle(callout).display !== 'none';
       const forceInline = callout.dataset.lxdFlow === 'inline';
-      if (!anchor || !useGutter || !isVisible || forceInline) {
+      if (!anchor || !useAnchored || !isVisible || forceInline) {
         if (callout._lxdMarker && callout._lxdMarker.parentNode && callout.parentNode !== callout._lxdMarker.parentNode) {
           callout._lxdMarker.parentNode.insertBefore(callout, callout._lxdMarker.nextSibling);
         }
@@ -8052,23 +8368,56 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         callout.style.top = '';
         callout.style.left = '';
         callout.style.right = '';
+        callout.style.removeProperty('--lxd-line');
+        callout.style.removeProperty('--lxd-arrow-y');
         return;
       }
       if (callout.parentNode !== document.body) {
         document.body.appendChild(callout);
       }
-      const side = callout.dataset.lxdSide === 'left' ? 'left' : 'right';
-      const adjustedTop = Math.max(top, lastBottom[side] + 12);
-      callout.style.position = 'absolute';
-      callout.style.top = `${adjustedTop}px`;
+
+      const rect = anchor.getBoundingClientRect();
+      const gap = 12;
+      const safeLeft = sidebarCollapsed ? 68 : 10;
+      const safeRight = 10;
+      const width = callout.offsetWidth || 250;
+      const preferredSide = callout.dataset.lxdPreferSide;
+      const rightFits = (vw - rect.right - safeRight) >= width + gap;
+      const leftFits = (rect.left - safeLeft) >= width + gap;
+      let side = preferredSide === 'left' && leftFits ? 'left' : 'right';
+      let left;
+
       if (side === 'left') {
-        callout.style.left = '16px';
-        callout.style.right = '';
+        left = window.scrollX + rect.left - width - gap;
+      } else if (rightFits) {
+        left = window.scrollX + rect.right + gap;
+      } else if (leftFits) {
+        side = 'left';
+        left = window.scrollX + rect.left - width - gap;
       } else {
-        callout.style.right = '16px';
-        callout.style.left = '';
+        // No clean gutter exists at this viewport. Keep the note attached by
+        // overlaying the target's right edge instead of drifting into whitespace.
+        left = window.scrollX + Math.max(safeLeft, Math.min(vw - width - safeRight, rect.right - width));
+        side = (left + width / 2) < rect.left + rect.width / 2 ? 'left' : 'right';
       }
-      lastBottom[side] = adjustedTop + callout.offsetHeight;
+
+      const top = window.scrollY + rect.top + Math.min(Math.max(rect.height * 0.18, 8), 48);
+      callout.style.position = 'absolute';
+      callout.style.top = `${top}px`;
+      callout.style.left = `${left}px`;
+      callout.style.right = '';
+      callout.dataset.lxdSide = side === 'left' ? 'left' : 'right';
+
+      const anchorCenterY = window.scrollY + rect.top + rect.height / 2;
+      const arrowY = Math.max(18, Math.min(callout.offsetHeight - 18, anchorCenterY - top));
+      let lineLength;
+      if (side === 'left') {
+        lineLength = Math.max(gap, window.scrollX + rect.left - (left + width));
+      } else {
+        lineLength = Math.max(gap, left - (window.scrollX + rect.right));
+      }
+      callout.style.setProperty('--lxd-line', `${Math.min(120, lineLength)}px`);
+      callout.style.setProperty('--lxd-arrow-y', `${arrowY}px`);
     });
   }
 
@@ -8094,8 +8443,12 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       const isOn = document.body.classList.toggle('lxd-mode');
       viewToggle.classList.toggle('view-toggle--on', isOn);
       viewToggle.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+      const bannerText = document.querySelector('.lxd-worked-banner span:last-child');
       if (isOn) {
         applyWorkedExample();
+        if (bannerText) {
+          bannerText.textContent = 'LXD annotations show completed interactions and design rationale.';
+        }
         // Reposition after content reveals settle
         setTimeout(positionCallouts, 200);
       } else {
@@ -8432,6 +8785,10 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
 
     const trials = sim.querySelectorAll('.sim__trial');
     if (!trials.length) return;
+    const simResetBtn = sim.querySelector(':scope > .assess-reset');
+    if (simResetBtn) {
+      simResetBtn.addEventListener('click', () => resetTrial(trials[0]));
+    }
 
     // Per-skill feedback. Wrong picks teach the matching failure pattern;
     // right pick names what made the match work AND highlights the
@@ -8467,7 +8824,19 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       SHOW_FEEDBACK: 4200     // feedback panel + complete
     };
 
+    function scheduleTrial(trial, fn, delay) {
+      if (!trial._simTimers) trial._simTimers = [];
+      const id = setTimeout(() => {
+        trial._simTimers = (trial._simTimers || []).filter(timerId => timerId !== id);
+        fn();
+      }, delay);
+      trial._simTimers.push(id);
+      return id;
+    }
+
     function resetTrial(trial) {
+      (trial._simTimers || []).forEach(timerId => clearTimeout(timerId));
+      trial._simTimers = [];
       trial.dataset.state = "awaiting";
       // Restore initial staging: hides the frame again so the trial
       // reads as a fresh decision moment, not a revealed diagram.
@@ -8522,12 +8891,16 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       }
     }
 
+    sim.addEventListener('assess-reset', () => {
+      trials.forEach(resetTrial);
+    });
+
     function handleWrong(trial, metaItem) {
       // Shake the wrong metadata item
       metaItem.classList.remove('sim__meta-item--shake');
       void metaItem.offsetWidth; // force reflow to restart animation
       metaItem.classList.add('sim__meta-item--shake');
-      setTimeout(() => metaItem.classList.remove('sim__meta-item--shake'), 400);
+      scheduleTrial(trial, () => metaItem.classList.remove('sim__meta-item--shake'), 400);
 
       // Show targeted wrong-pick feedback
       const fb = trial.querySelector('[data-feedback]');
@@ -8559,7 +8932,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       trial.dataset.staging = 'revealed';
 
       // 200ms: matched metadata animates to is-matched + match tag
-      setTimeout(() => {
+      scheduleTrial(trial, () => {
         metaItem.classList.add('is-matched');
         if (!metaItem.querySelector('.load-arch__match-tag')) {
           metaItem.insertAdjacentHTML('beforeend', '<span class="load-arch__match-tag">match</span>');
@@ -8567,7 +8940,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       }, T.SELECT);
 
       // 500ms: matched skill on disk gets highlighted, others dim
-      setTimeout(() => {
+      scheduleTrial(trial, () => {
         trial.querySelectorAll('.load-arch__skill').forEach(s => {
           if (s.dataset.skill === skillKey) {
             s.classList.add('load-arch__skill--matched');
@@ -8578,7 +8951,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       }, T.HIGHLIGHT_DISK);
 
       // 800ms: step 2 transitions to active + L1→L2 connector fires
-      setTimeout(() => {
+      scheduleTrial(trial, () => {
         const step2 = trial.querySelector('.sim__step-2');
         if (step2) step2.dataset.step2State = "active";
         const conn = trial.querySelector('.sim__connector[data-connector="l1-l2"]');
@@ -8590,7 +8963,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       }, T.ACTIVATE_STEP_2);
 
       // 1100ms: SKILL.md body slides into L2 loaded list
-      setTimeout(() => {
+      scheduleTrial(trial, () => {
         const list = trial.querySelector('.sim__step-2 .sim__loaded-items');
         if (list) {
           list.insertAdjacentHTML('beforeend', `
@@ -8606,14 +8979,14 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       }, T.LOAD_BODY);
 
       // 1200ms: SKILL.md file on disk marked is-loaded
-      setTimeout(() => {
+      scheduleTrial(trial, () => {
         const matchedSkill = trial.querySelector(`.load-arch__skill[data-skill="${skillKey}"]`);
         const f = matchedSkill ? matchedSkill.querySelector('[data-file="skill-md"]') : null;
         if (f) f.classList.add('is-loaded');
       }, T.MARK_FILE_BODY);
 
       // 1500ms: step 3 transitions to active + L2→L3+ connector fires
-      setTimeout(() => {
+      scheduleTrial(trial, () => {
         const step3 = trial.querySelector('.sim__step-3');
         if (step3) step3.dataset.step3State = "active";
         const conn = trial.querySelector('.sim__connector[data-connector="l2-l3"]');
@@ -8625,7 +8998,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       }, T.ACTIVATE_STEP_3);
 
       // 1700ms: cited resource (template.md) loads into L3+ context + marked on disk
-      setTimeout(() => {
+      scheduleTrial(trial, () => {
         const list = trial.querySelector('.sim__step-3 .sim__loaded-items');
         const matchedSkill = trial.querySelector(`.load-arch__skill[data-skill="${skillKey}"]`);
         const f = matchedSkill ? matchedSkill.querySelector('[data-file="template"]') : null;
@@ -8648,7 +9021,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       }, T.LOAD_RESOURCE);
 
       // 2100ms: NON-LOAD moment for parse.py, pedagogically critical
-      setTimeout(() => {
+      scheduleTrial(trial, () => {
         const matchedSkill = trial.querySelector(`.load-arch__skill[data-skill="${skillKey}"]`);
         const f = matchedSkill ? matchedSkill.querySelector('[data-file="parse"]') : null;
         if (f) {
@@ -8658,7 +9031,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       }, T.MARK_NOT_LOADED);
 
       // 2400ms: feedback + mark complete + re-enable clicks for exploration
-      setTimeout(() => {
+      scheduleTrial(trial, () => {
         const fb = trial.querySelector('[data-feedback]');
         const fbContent = feedback[skillKey];
         if (fb && fbContent) {
@@ -9297,6 +9670,27 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         });
       });
     });
+
+    const diagPanel = document.querySelector('.diag');
+    if (diagPanel) {
+      diagPanel.addEventListener('assess-reset', () => {
+        items.forEach(item => {
+          delete item.dataset.state;
+          item.querySelectorAll('.diag__choice').forEach(choice => {
+            delete choice.dataset.state;
+            choice.disabled = false;
+            choice.setAttribute('aria-checked', 'false');
+          });
+          const feedback = item.querySelector('.diag__feedback');
+          if (feedback) {
+            feedback.classList.remove('is-visible');
+            delete feedback.dataset.tone;
+            feedback.innerHTML = '';
+          }
+        });
+        applyScenario(resolveScenario());
+      });
+    }
   })();
 
   // CP3, File-tree builder. Drag a card into a zone (HTML5 drag) OR tap
