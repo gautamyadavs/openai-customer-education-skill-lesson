@@ -23,6 +23,9 @@
   --correct: #1F3F2F;
     --correct-deep: #163025;
     --correct-bg: #EFF4EC;
+  --annotation: #4B8BC8;
+    --annotation-deep: #244A68;
+    --annotation-bg: #EEF7FF;
   --wrong: #B8533A;
     --wrong-soft: #E8D4C8;
     --wrong-bg: #FAF1ED;
@@ -747,27 +750,22 @@
     display: none;
   }
   body.lxd-mode .lxd-only-inline {
-    display: inline;
-    color: var(--accent);
-    font-weight: 600;
+    display: none;
   }
   .lxd-only-block {
     display: none;
   }
   body.lxd-mode .lxd-only-block {
-    display: block;
+    display: none;
   }
   
   body.lxd-mode .question__head {
     justify-content: flex-start;
     gap: 12px;
   }
-  body.lxd-mode .question__status.lxd-only-inline {
-    display: inline-block;
-    color: var(--ink-quiet);
-  }
+  body.lxd-mode .question__status.lxd-only-inline,
   body.lxd-mode .question.completed .question__status.lxd-only-inline {
-    color: var(--evergreen);
+    display: none;
   }
   .checkpoint__lo,
   .reflect__lo-tag {
@@ -775,56 +773,35 @@
   }
   body.lxd-mode .checkpoint__lo,
   body.lxd-mode .reflect__lo-tag {
-    display: inline-block;
+    display: none;
   }
   
-  /* ── LXD CALLOUT SYSTEM ───────────────────────────────────────────────
-     Side-anchored design-rationale boxes. Each callout has a data-lxd-anchor
-     attribute pointing to a selector for the element it explains; JS reads
-     the anchor's document Y position and pins the callout to that same Y in
-     the right gutter (or left, via data-lxd-side="left"). Hidden in learner
-     view (display: none), shown in LXD view (display: block).
-     
-     Position: absolute relative to the body, top set inline by JS. They sit
-     in the page padding so they don't displace learner content. On narrow
-     viewports (< 1280px) the side gutters collapse and callouts fall back
-     to inline display below their anchor. */
+  /* ── LXD ANNOTATION SYSTEM ────────────────────────────────────────────
+     Short blue proof-point annotations for portfolio review. They anchor to
+     the design choice they justify without displacing learner content on
+     desktop; cramped viewports fall back to inline placement. */
   .lxd-callout {
     display: none;
   }
   body.lxd-mode .lxd-callout {
     display: block;
     position: absolute;
-    width: 220px;
-    background: var(--cream-deep);
-    border: 1px solid rgba(13, 13, 13, 0.12);
-    border-left: 3px solid var(--accent);
-    padding: 12px 14px;
-    font-size: 12.5px;
-    line-height: 1.55;
-    color: var(--ink-soft);
-    border-radius: 0 4px 4px 0;
+    width: 250px;
+    background: var(--annotation-bg);
+    border: 1.5px solid var(--annotation);
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--annotation-deep);
+    font-weight: 650;
+    border-radius: 6px;
     z-index: 5;
-    /* top + right/left set inline by JS based on anchor position */
   }
   .lxd-callout__label {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 6px;
+    display: none;
   }
   .lxd-callout__principle {
-    display: block;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--ink-quiet);
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--rule);
-    line-height: 1.5;
+    display: none;
   }
   .lxd-callout p {
     margin: 0;
@@ -835,33 +812,54 @@
   .lxd-callout code {
     font-family: var(--mono);
     font-size: 11px;
-    background: var(--paper);
+    background: rgba(255, 255, 255, 0.58);
     padding: 1px 4px;
-    border-radius: 2px;
+    border-radius: 3px;
   }
-  /* Visual connector: a faint horizontal line from the callout's left edge
-     pointing toward the page content, hinting at the anchor relationship. */
   .lxd-callout::before {
     content: '';
     position: absolute;
-    top: 14px;
-    left: -16px;
-    width: 12px;
+    top: 50%;
+    left: -74px;
+    width: 70px;
     height: 1px;
-    background: var(--accent);
-    opacity: 0.4;
+    background: var(--annotation);
+    opacity: 0.88;
+  }
+  .lxd-callout::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 5px);
+    left: -80px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 8px solid var(--annotation);
+  }
+  body.lxd-mode .lxd-callout[data-lxd-flow="inline"] {
+    position: static;
+    width: auto;
+    max-width: 100%;
+    margin: 10px 0 14px;
+  }
+  body.lxd-mode .lxd-callout[data-lxd-flow="inline"]::before,
+  body.lxd-mode .lxd-callout[data-lxd-flow="inline"]::after {
+    display: none;
   }
   body.lxd-mode .lxd-callout[data-lxd-side="left"] {
-    border-left: none;
-    border-right: 3px solid var(--accent);
-    border-radius: 4px 0 0 4px;
+    border-color: var(--annotation);
   }
   body.lxd-mode .lxd-callout[data-lxd-side="left"]::before {
     left: auto;
-    right: -16px;
+    right: -74px;
   }
-  /* Anchor element gets a subtle dotted left/right edge in LXD view to make
-     the spatial relationship between callout and target visible. */
+  body.lxd-mode .lxd-callout[data-lxd-side="left"]::after {
+    left: auto;
+    right: -80px;
+    border-right: 0;
+    border-left: 8px solid var(--annotation);
+  }
   body.lxd-mode [data-lxd-target] {
     position: relative;
   }
@@ -872,8 +870,8 @@
     right: -8px;
     width: 2px;
     height: 100%;
-    background: var(--accent);
-    opacity: 0.25;
+    background: var(--annotation);
+    opacity: 0.22;
     pointer-events: none;
   }
   
@@ -887,13 +885,12 @@
     align-items: center;
     gap: 8px;
     padding: 8px 14px;
-    background: var(--cream-deep);
-    border: 1px solid rgba(13, 13, 13, 0.12);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 4px 4px 0;
+    background: var(--annotation-bg);
+    border: 1.5px solid var(--annotation);
+    border-radius: 6px;
     font-size: 12px;
     font-family: var(--mono);
-    color: var(--ink-soft);
+    color: var(--annotation-deep);
     max-width: 720px;
     margin: 12px auto 0;
   }
@@ -901,8 +898,87 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--annotation);
     flex: none;
+  }
+  .lxd-alignment {
+    display: none;
+    margin: 28px 0 24px;
+  }
+  body.lxd-mode .lxd-alignment {
+    display: block;
+  }
+  .lxd-alignment__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .lxd-alignment__title {
+    font-size: 18px;
+    font-weight: 650;
+    color: var(--ink);
+  }
+  .lxd-alignment__meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--annotation-deep);
+  }
+  .lxd-alignment__scroll {
+    overflow-x: auto;
+    border: 1px solid rgba(75, 139, 200, 0.34);
+    border-radius: 6px;
+    background: var(--paper);
+  }
+  .lxd-alignment__table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .lxd-alignment__table th,
+  .lxd-alignment__table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--rule-soft);
+    text-align: left;
+    vertical-align: top;
+  }
+  .lxd-alignment__table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-quiet);
+    background: var(--annotation-bg);
+  }
+  .lxd-alignment__lo {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--annotation-deep);
+    margin-bottom: 4px;
+  }
+  .lxd-alignment__count {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .lxd-alignment__note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--ink-quiet);
+    line-height: 1.5;
+  }
+  body.lxd-mode .lxd-callout[data-lxd-anchor='[data-lxd-target="lxd-resources-case"]'],
+  body.lxd-mode .lxd-callout[data-lxd-anchor='[data-lxd-target="lxd-q1"]'],
+  body.lxd-mode .lxd-callout[data-lxd-anchor='[data-lxd-target="lxd-q2"]'] {
+    display: none;
   }
   
   /* Responsive fallback: when the viewport is too narrow for side-gutter
@@ -913,9 +989,10 @@
       position: static;
       width: auto;
       max-width: 100%;
-      margin: 8px 0 12px;
+      margin: 10px 0 14px;
     }
-    body.lxd-mode .lxd-callout::before { display: none; }
+    body.lxd-mode .lxd-callout::before,
+    body.lxd-mode .lxd-callout::after { display: none; }
     body.lxd-mode [data-lxd-target]::after { display: none; }
   }
   @media (max-width: 1519px) {
@@ -923,17 +1000,18 @@
       position: static;
       width: auto;
       max-width: 100%;
-      margin: 8px 0 12px;
+      margin: 10px 0 14px;
     }
-    body.lxd-mode:not(.sidebar-collapsed) .lxd-callout::before { display: none; }
+    body.lxd-mode:not(.sidebar-collapsed) .lxd-callout::before,
+    body.lxd-mode:not(.sidebar-collapsed) .lxd-callout::after { display: none; }
     body.lxd-mode:not(.sidebar-collapsed) [data-lxd-target]::after { display: none; }
   }
   
-  /* In LXD mode, hide existing block-level .lxd-note instances EXCEPT the
-     KLI alignment table at the top of the page (which stays as the
-     foundational framework reference). All other note content has been
-     distilled into anchored callouts. */
-  body.lxd-mode .lxd-note:not(.lxd-note--keep) {
+  /* Long-form rationale notes remain in source history, but LXD view now
+     surfaces only concise blue annotations. */
+  body.lxd-mode .lxd-note,
+  body.lxd-mode .course-nav__lxd-note,
+  body.lxd-mode .course-nav__prereq {
     display: none;
   }
   .lxd-note {
@@ -949,7 +1027,7 @@
     border-radius: 0 4px 4px 0;
   }
   body.lxd-mode .lxd-note {
-    display: block;
+    display: none;
   }
   .lxd-note__head {
     display: flex;
@@ -2422,6 +2500,53 @@
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-3px); }
     75% { transform: translateX(3px); }
+  }
+  .anat-hint-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 7px 12px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-quiet);
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .anat-hint-btn:hover:not(:disabled) {
+    border-color: var(--ink-quiet);
+    color: var(--ink);
+  }
+  .anat-hint-btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .anat-hint-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .anat-hint-btn__icon {
+    font-size: 13px;
+    line-height: 1;
+  }
+  .anat-hotspot.hint-pulse {
+    animation: anat-hint-pulse 2.4s ease-out;
+    stroke-width: 3;
+    stroke-dasharray: 6 3;
+    pointer-events: none;
+  }
+  @keyframes anat-hint-pulse {
+    0%   { stroke: rgba(232, 180, 100, 0.55); fill: rgba(232, 180, 100, 0.05); }
+    15%  { stroke: rgba(232, 180, 100, 1);    fill: rgba(232, 180, 100, 0.40); }
+    35%  { stroke: rgba(232, 180, 100, 0.55); fill: rgba(232, 180, 100, 0.10); }
+    55%  { stroke: rgba(232, 180, 100, 1);    fill: rgba(232, 180, 100, 0.40); }
+    75%  { stroke: rgba(232, 180, 100, 0.55); fill: rgba(232, 180, 100, 0.10); }
+    100% { stroke: rgba(232, 180, 100, 0.55); fill: rgba(232, 180, 100, 0.05); }
   }
   
   .split {
@@ -5647,6 +5772,65 @@
   .approach-compare__col--skill .approach-compare__loading-label {
     color: var(--gold-deep);
   }
+
+  /* Primer, four cards between the orientation video and the lab. Establishes
+     a minimum-viable mental model (what / where / how / when) for novices who
+     report missing a bigger-picture frame before the workshop. Visual register
+     deliberately quieter than approach-compare so it reads as orientation, not
+     content; no h2, no checkmarks, no winner-loser framing. */
+  .primer__lede {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    font-style: italic;
+    line-height: 1.6;
+    margin: 0 0 22px;
+  }
+  .primer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 0;
+  }
+  @media (max-width: 880px) {
+    .primer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .primer-grid { grid-template-columns: 1fr; gap: 10px; }
+  }
+  .primer-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 16px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  .primer-card__label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-quiet);
+    margin: 0;
+  }
+  .primer-card__body {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin: 0;
+  }
+  .primer-card__body code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    background: var(--cream-deep);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
   .anti-h3 {
     font-family: var(--display);
     font-size: 18px;
@@ -5884,7 +6068,7 @@
         <span class="view-toggle__pill">
           <span class="view-toggle__dot"></span>
         </span>
-        <span class="view-toggle__label">LXD view</span>
+        <span class="view-toggle__label">LXD annotations</span>
       </button>
       <div class="meta-bar__progress" title="Assessment interactions across this lesson" role="status" aria-live="polite" aria-atomic="true">
         <span><span class="meta-bar__progress-count" id="progressCount">0</span> / 14 checks</span>
@@ -5902,7 +6086,7 @@
   </div>
   <div class="lxd-worked-banner" role="status" aria-live="polite">
     <span class="lxd-worked-banner__dot" aria-hidden="true"></span>
-    <span>Worked example: <strong>Marketing &middot; process skill</strong>. Every interactive element is pre-filled to its correct-engagement state. Side callouts anchor to the elements they explain. Toggle LXD off to return to learner view.</span>
+    <span>LXD annotations show completed interactions and design rationale.</span>
   </div>
 </header>
 
@@ -5910,14 +6094,59 @@
 <main id="main">
 <section class="hero" aria-labelledby="hero-title" data-lxd-target="lxd-buildfirst">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-buildfirst"]'>
-  <div class="lxd-callout__label">Architecture · build-first</div>
-  <p>Earlier draft was concept-first (intro &rarr; SKILL.md anatomy &rarr; lab). Drop-off data showed learners abandoning before authoring; lesson title promised "Author" but they didn't author until section 3. Flipped to build &rarr; explain.</p>
-  <span class="lxd-callout__principle">Mayer pre-training (secondary when experiential anchor exists) &middot; Bjork desirable difficulty &middot; Keller ARCS Relevance</span>
+  <div class="lxd-callout__label">Architecture &middot; build-first</div>
+  <p>Pre-build content is kept to a brief primer; the workshop is the lesson's first substantive interaction, so concept teaching follows experiential anchor.</p>
+  <span class="lxd-callout__principle">Constructivism &middot; Bjork desirable difficulty &middot; Mayer pre-training (secondary) &middot; Keller ARCS Relevance</span>
 </aside>
   <div class="container">
     <h1 class="hero__title" id="hero-title">Author your first <em>Skill.</em></h1>
     <div class="hero__meta" aria-label="Lesson metadata">
       <span class="hero__meta-item">40 minutes</span>
+    </div>
+
+    <div class="lxd-alignment" data-lxd-target="lxd-alignment">
+      <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-alignment"]'>
+        <div class="lxd-callout__label">LO alignment</div>
+        <p>Each objective maps to a Knowledge Component type and the practice opportunities that target it.</p>
+      </aside>
+      <div class="lxd-alignment__head">
+        <h2 class="lxd-alignment__title">Learning Objective Alignment Map</h2>
+        <div class="lxd-alignment__meta">Designer view &middot; 14-check model</div>
+      </div>
+      <div class="lxd-alignment__scroll">
+        <table class="lxd-alignment__table" aria-label="Learning objectives mapped to knowledge component type and practice opportunities">
+          <thead>
+            <tr>
+              <th scope="col">Learning objective</th>
+              <th scope="col">Knowledge component type</th>
+              <th scope="col">Practice opportunities</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lxd-alignment__lo">LO 1</span>Given a user request to ChatGPT, <strong>explain</strong> the three runtime stages of progressive disclosure (discovery, activation, execution) and <strong>predict</strong> which skill content is loaded into context at each stage, with the explanation invariant across domain examples.</td>
+              <td>Concept &middot; constant application</td>
+              <td><span class="lxd-alignment__count">4</span> click-tracked: anatomy hotspot (shared with LO 2), simulation, application MCQ, recall MCQ. <span style="color: var(--ink-quiet);">Plus orientation surfaces: hero LO box, video, primer.</span></td>
+            </tr>
+            <tr>
+              <td><span class="lxd-alignment__lo">LO 2</span>Given a piece of skill content (a rule, example, template, or asset), <strong>place</strong> it in metadata, the SKILL.md body, or a resource file by applying the progressive-disclosure placement rule, achieving correct classification across varying content types.</td>
+              <td>Rule &middot; variable application</td>
+              <td><span class="lxd-alignment__count">3</span> click-tracked: anatomy hotspot (shared with LO 1), drag-and-drop placement, analysis MCQ.</td>
+            </tr>
+            <tr>
+              <td><span class="lxd-alignment__lo">LO 3</span>Given a skill purpose and target user vocabulary, <strong>author</strong> a description applying the WHAT + WHEN pattern with concrete trigger phrases, producing reliable activation on indirect phrasings as well as direct domain naming.</td>
+              <td>Procedure &middot; variable application</td>
+              <td><span class="lxd-alignment__count">5</span> click-tracked: NAME/WHAT/WHEN workshop (3 sequential picks), rewrite MCQ, scope critique MCQ.</td>
+            </tr>
+            <tr>
+              <td><span class="lxd-alignment__lo">LO 4</span>Given a real recurring workflow, <strong>build</strong> a SKILL.md in ChatGPT, <strong>verify</strong> it activates on 2 realistic prompts and does not activate on 1 out-of-scope prompt, and <strong>diagnose</strong> any failure to the correct layer (description, body, or resources).</td>
+              <td>Procedure &middot; integrative</td>
+              <td><span class="lxd-alignment__count">3</span> click-tracked: failure-mode diagnostic (3 Sam cases). <span style="color: var(--ink-quiet);">Plus 1 deliverable artifact: the built skill from the ChatGPT lab.</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="lxd-alignment__note">The 14-check progress meter counts click-tracked checkpoints only. Practice opportunities listed here also include non-click-tracked orientation surfaces. Shared checkpoints count once in the meter but may support more than one LO.</p>
     </div>
 
     <div class="hero__los">
@@ -5952,7 +6181,7 @@
 <em>Pain point #4, TYPE_HINT used jargon before formal introduction.</em> The hint that appears after the learner picks a skill-type chip used to read: &ldquo;A reusable process skill encodes a recurring workflow. Most of the work lives in the <em>body</em> as a numbered procedure; <em>resources</em> stay light.&rdquo; The terms <em>body</em> and <em>resources</em> are formally defined only in section 1.2 (Inside SKILL.md), but the TYPE_HINT appears in section 1.1 (before the SKILL.md anatomy is taught). A learner reading the hint to scaffold their type-pick gets jargon instead of help. Fix: rewrote all three TYPE_HINTs in plain language, naming what the skill <em>does</em> rather than where bits go: &ldquo;The instructions are mostly a numbered procedure; the skill doesn't need many extra files&rdquo; (process), &ldquo;The skill talks to those systems through code rather than relying only on the model's judgment&rdquo; (tool), &ldquo;The skill bundles your style guides or templates so the output is consistent every time&rdquo; (standards). The hints are now self-contained orientation rather than forward-references to terminology the learner hasn't met.
 
 <br><br>
-<em>Pain point #5, one of six checkpoint LO labels leaked into learner view.</em> The lesson uses <code>&lt;span class=&quot;checkpoint__lo lxd-only-inline&quot;&gt;TARGETS LO N&lt;/span&gt;</code> to mark each activity's LO target visible only to designers (the LXD view toggle reveals these, learners never see them). One label on the CP3 drag-and-drop activity was missing the <code>lxd-only-inline</code> class, leaking &ldquo;TARGETS LO 2&rdquo; into the learner-facing UI. Fix: added the class. Verified all 6 <code>.checkpoint__lo</code> elements now have the class and are hidden from learner view.
+<em>Pain point #5, one of six checkpoint LO labels leaked into learner view.</em> The lesson uses <code>&lt;span class=&quot;checkpoint__lo lxd-only-inline&quot;&gt;TARGETS LO N&lt;/span&gt;</code> to mark each activity's LO target visible only to designers (the LXD annotations toggle reveals these, learners never see them). One label on the CP3 drag-and-drop activity was missing the <code>lxd-only-inline</code> class, leaking &ldquo;TARGETS LO 2&rdquo; into the learner-facing UI. Fix: added the class. Verified all 6 <code>.checkpoint__lo</code> elements now have the class and are hidden from learner view.
 
 <br><br>
 <em>Pain point #7, auto-generated correct WHEN option produced a period-comma typo.</em> The workshop's correct WHEN option is constructed at runtime by appending &ldquo;, or shares input that looks like [domain] content&rdquo; onto <code>starter.when</code>. But every starter's <code>when</code> ends with a period (or with a period inside a closing quote, like <code>"options on a page."</code>), so the concatenation produced &ldquo;...launch., or shares input...&rdquo; or &ldquo;...page.&rdquo;, or shares input...&rdquo;, a visible period-comma sequence that broke the option's readability. Affected all 11 roles. Fix: added a regex to strip the trailing period (preserving the trailing quote if present) before concatenating the pushy extension. Verified across all 11 roles: clean output, no typos, comma-inside-closing-quote convention preserved for the roles whose starter <code>when</code> ends with a quoted phrase.
@@ -5999,7 +6228,7 @@
 
     <p><strong>Secondary cut: in-workshop framing layers collapsed.</strong> After the pre-workshop prose cut, the workshop opening still had four nested framing layers before the first chip: H3 "Three decisions that make your skill activate.", lede paragraph "Pick a workflow from your job... we'll suggest a starter then walk you through three decisions to make it activate reliably.", personalize eyebrow "Personalize", sub-title "Pick a starter that fits your work.", then finally the chip step "1. Pick your role." A learner think-aloud revealed each layer was rephrasing the next: H3 promised three decisions, lede restated three decisions, eyebrow + sub-title said "pick a starter" in two ways before the chip step also said "pick your role." Four labels of essentially the same instruction. Cut: removed the personalize eyebrow + sub-title (the dashed-bordered panel is visually distinct enough to read as a sub-region without labels; the numbered step "1. Pick your role." is its own clear instruction). Tightened lede: dropped the "three decisions to make it activate reliably" clause since the H3 immediately above already says exactly that. The workshop opening now reads H3 &rarr; one-sentence lede &rarr; numbered chip step. Vertical distance from section H2 to first interactive chip dropped from 642px to 553px (another ~14% scroll reduction after the pre-workshop prose cut already saved ~60%). Net effect of both cuts combined: ~76% reduction in scroll-to-first-interaction from the prior interim state.</p>
 
-    <p><strong>Learner-facing vs. designer-facing duality.</strong> The hero LO box above shows simplified, action-oriented LOs in the learner's voice (capability statements, no jargon). The LO Coverage Map below shows the full KLI-form LOs the design team works from. This separation is intentional: KC type, Bloom level, and assessment count are useful to a designer auditing the lesson; they're noise to a learner trying to learn. </p><p>What the LXD/ID team stores per LO: the Knowledge Component type (per Koedinger, Corbett &amp; Perfetti's KLI taxonomy), the full performance objective written in Mager three-component form (performance / conditions / criterion), the assessments targeting each LO, and time-on-task. Each assessment is mapped one-to-one to the click-tracked progress meter in the header (27 total). Learners see only the simplified version in the LO box above; the full KLI-form LO below is the design backbone.</p>
+    <p><strong>Learner-facing vs. designer-facing duality.</strong> The hero LO box above shows simplified, action-oriented LOs in the learner's voice (capability statements, no jargon). The LO Coverage Map below shows the full KLI-form LOs the design team works from. This separation is intentional: KC type, Bloom level, and assessment count are useful to a designer auditing the lesson; they're noise to a learner trying to learn. </p><p>What the LXD/ID team stores per LO: the Knowledge Component type (per Koedinger, Corbett &amp; Perfetti's KLI taxonomy), the full performance objective written in Mager three-component form (performance / conditions / criterion), the assessments targeting each LO, and time-on-task. Each assessment is mapped one-to-one to the click-tracked progress meter in the header (14 total). Learners see only the simplified version in the LO box above; the full KLI-form LO below is the design backbone.</p>
 
     <p style="margin-top: 12px; font-size: 13px;"><strong style="color: var(--accent);">LO 1 surfaces a conceptual mental-model KC.</strong> An earlier draft listed only LOs 2-4 (the procedural KCs). KLI is explicit that <em>conceptual mental-model</em> KCs are first-class, and <em>What a Skill is</em> does substantial conceptual work (why Skills exist as an architecture, what a skill is structurally, how progressive disclosure works as a runtime, the dual-mode invocation pattern). Treating that as background-knowledge rather than a named LO would understate what the lesson teaches and leave the simulation, application MCQ, and KC Q1 unmoored from any objective. LO 1 makes it explicit and pairs the conceptual work with predictive assessment so the learner has to <em>use</em> the model, not just recall it.</p>
 
@@ -6125,7 +6354,7 @@
 <section id="section-orientation" style="padding-top: 32px; padding-bottom: 32px;" data-lxd-target="lxd-orientation">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-orientation"]'>
   <div class="lxd-callout__label">Orientation video &middot; UDL Principle of Representation</div>
-  <p>Embedded above the lab so learners who prefer passive intake can watch first, then engage with the interactive build below. The video repurposes OpenAI Academy's existing Skills video asset; the rest of the lesson is interactive. Multi-modal design: video orients (recognition-level), lab applies (construction-level), MCQs verify (retrieval). Each mode does different cognitive work, none is redundant. Framing line explicitly directs learners to the lab next, so the video isn't mistaken for a replacement.</p>
+  <p>The video orients quickly; the lesson's value comes from applied practice.</p>
   <span class="lxd-callout__principle">UDL Representation &middot; Multi-modal layering &middot; Repurpose, don't replace</span>
 </aside>
   <div class="container">
@@ -6138,6 +6367,35 @@
   </div>
 </section>
 
+<section id="section-skill-primer" style="padding-top: 0; padding-bottom: 40px;" data-lxd-target="lxd-primer">
+<aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-primer"]'>
+  <div class="lxd-callout__label">Pre-training &middot; anchor before the build</div>
+  <p>Pre-training anchors the mental model so the workshop teaches procedure, not concept.</p>
+  <span class="lxd-callout__principle">Mayer pre-training principle &middot; Sweller Cognitive Load Theory</span>
+</aside>
+  <div class="container">
+    <p class="primer__lede">Four ideas to carry into the build, whether you watched the video or skipped ahead.</p>
+    <div class="primer-grid" role="list" aria-label="What a skill is, in four short takeaways">
+      <div class="primer-card" role="listitem">
+        <p class="primer-card__label">What a skill is</p>
+        <p class="primer-card__body">A short write-up that teaches ChatGPT how to do a specific task. You write it once; ChatGPT follows it every time the task comes up.</p>
+      </div>
+      <div class="primer-card" role="listitem">
+        <p class="primer-card__label">Where it lives</p>
+        <p class="primer-card__body">Saved to your ChatGPT account at <code>chatgpt.com/skills</code>. Available in every new chat from then on. No prompt library to maintain.</p>
+      </div>
+      <div class="primer-card" role="listitem">
+        <p class="primer-card__label">How it shows up</p>
+        <p class="primer-card__body">ChatGPT picks the right one. It matches your request against your saved skills and activates the one that fits.</p>
+      </div>
+      <div class="primer-card" role="listitem">
+        <p class="primer-card__label">When to make one</p>
+        <p class="primer-card__body">If you find yourself explaining the same workflow to ChatGPT over and over, that's a skill waiting to be written.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="section-build-your-skill" style="padding-bottom: 32px;">
   <div class="container">
     <div class="lab">
@@ -6146,7 +6404,7 @@
         <h2 class="lab__title">Build your first skill.</h2>
       </div>
 
-      <p style="font-size: 15px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 32px;">A skill is a folder of instructions ChatGPT picks up automatically when the user's request matches what the skill is for. Three steps below.</p>
+      <p style="font-size: 15px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 32px;">Three steps below.</p>
 
       <!-- Step 01, Design YOUR skill (was section 1.1 workshop) -->
       <div class="step">
@@ -6158,7 +6416,7 @@
     <div class="apply-block" aria-label="Design your skill workshop" data-lxd-target="lxd-workshop-chips">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-workshop-chips"]'>
   <div class="lxd-callout__label">Workshop · variable application</div>
-  <p>11 roles &times; 3 skill types &rarr; 33 starters. Role determines diagnostic surface (Marketing &rarr; Maya's campaign-brief-builder later). Type determines the description starter shape. Practicing on the learner's own context tests <em>production</em>, not recognition.</p>
+  <p>Role and skill-type choices support 33 starter paths and role-relevant diagnostic surfaces.</p>
   <span class="lxd-callout__principle">KLI variable-application &middot; 4C/ID surface variability &middot; LO 3 production KC</span>
 </aside>
       <button class="assess-reset" type="button" aria-label="Reset this assessment to start over"><span class="assess-reset__icon" aria-hidden="true">↻</span>Reset</button>
@@ -6211,7 +6469,7 @@
         <div class="apply-decision" data-decision="name" data-lxd-target="lxd-name-decision">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-name-decision"]'>
   <div class="lxd-callout__label">NAME &middot; distractor misconceptions</div>
-  <p>Three distractors test canonical LO 3 misconceptions: <strong>packaging-copy</strong> (names what the skill <em>is</em>, not what it does), <strong>capability-listing</strong> (over-broad descriptors), <strong>convention-violation</strong> (PascalCase or spaced words). Correct = slug-cased verb-noun. Wrong-pick feedback names the misconception explicitly.</p>
+  <p>Immediate feedback names common authoring mistakes and turns them into reusable standards.</p>
   <span class="lxd-callout__principle">Mager Criterion &middot; Misconception-naming feedback</span>
 </aside>
           <div class="apply-decision__head">
@@ -6259,7 +6517,7 @@
       <div class="build-gated" data-build-gated data-lxd-target="lxd-build-gated">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-build-gated"]'>
   <div class="lxd-callout__label">Forcing function &middot; gated reveal</div>
-  <p>Steps 02-03 hidden until the workshop verdict appears. Earlier draft offered a "skip workshop" fallback in Step 02; removed because the workshop carries all the LO 3 misconception teaching via wrong-pick feedback. Skipping it loses the lesson's main pedagogical mechanism.</p>
+  <p>Gated reveal keeps the workflow self-paced while preserving a clear production path.</p>
   <span class="lxd-callout__principle">4C/ID gradual fading &middot; Self-paced scaffold</span>
 </aside>
 
@@ -6345,6 +6603,7 @@
             </button>
           </div>
           <p>Edit on the left, save, re-run the failing prompts on the right. Make <strong>one round</strong> of edits. A skill tightened around real failures generalizes better than one that grew to handle every imagined edge case.</p>
+          <p style="font-size: 13.5px; color: var(--ink-quiet); margin-top: -12px;">For evaluation methodology beyond a 3-prompt sanity check, see <strong>Module 3: Evaluating skills</strong> in the sidebar.</p>
 
           <div class="ready-rubric">
             <div class="ready-rubric__head">Your skill is ready when&hellip;</div>
@@ -6446,6 +6705,7 @@
           </div>
           <div class="anat-layout__center">
             <p class="anat-prompt" data-anat-prompt aria-live="polite">Click the part of this <code>SKILL.md</code> file that holds the <span class="anat-target">name</span>.</p>
+            <button class="anat-hint-btn" type="button" data-anat-hint aria-label="Show me where this part is in the file"><span class="anat-hint-btn__icon" aria-hidden="true">&#x2197;</span><span data-anat-hint-label>Show me where</span></button>
             <div class="cp-tally" role="status" aria-live="polite">YOUR SCORE &middot; <strong><span data-anat-score>0</span> of 4 found on first try</strong></div>
           </div>
         </div>
@@ -6453,10 +6713,11 @@
 <div class="lxd-note">
   <div class="lxd-note__head">
     <span class="lxd-note__label">CP-anat &middot; Design rationale</span>
-    <span class="lxd-note__principle">KLI &middot; Constant-application practice for declarative KCs</span>
+    <span class="lxd-note__principle">KLI &middot; Constant-application practice for declarative KCs &middot; UDL self-regulation</span>
   </div>
   <p><strong>4 click-tracked targets, immediate feedback, no penalty for retry.</strong> Anatomy is a verbal/declarative KC (recognize the four parts of a SKILL.md and where they live in the file). KLI's verbal-information principle says these need few practice trials, but they need <em>fast retrieval</em> in active context. The hotspot puts the learner inside a real SKILL.md and asks them to find each part by clicking, not name them in a vacuum. <strong>"On first try" wording in the score</strong> rewards retrieval but doesn't lock the question, so missed targets become teaching moments rather than failure events. Wrong-region clicks show targeted feedback ("That's the body, not the frontmatter") so the misconception that drove the wrong click is named.</p>
   <p><strong>Why hotspots not MCQs.</strong> An MCQ asking "which field holds the description?" tests recognition; the hotspot tests <em>localization</em>, same KC, more transfer. Mayer's spatial-contiguity: the answer space is the file itself.</p>
+  <p><strong>Hint mechanism for stuck learners.</strong> A <em>Show me where</em> button per target pulses the correct hotspot on click. Added after learner feedback that the resources target in particular was hard to locate without ever revealing where it lived. Using the hint sets <code>firstAttempt[target] = false</code> so the score reflects help-taking honestly without a separate "hint used" indicator. Productive struggle preserved by default for learners who don't need help; agency-with-honest-cost for those who do.</p>
 </div>
         <div class="anat-layout__figure">
         <div class="anatomy" data-lxd-target="lxd-anatomy">
@@ -6508,25 +6769,29 @@
         <text x="62" y="750" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">- Preserve names, dates, numbers.</text>
         <text x="62" y="780" font-family="JetBrains Mono, monospace" font-size="20" fill="#E8E2D2" opacity="0.75">- Flag uncertainty with "Possibly:".</text>
 
-        <!-- ── ANNOTATIONS, header-only at fs 36 (was 32) ── -->
+        <!-- ── ANNOTATIONS, main label fs 28 + italic sublabel fs 16 ── -->
         <g class="anat-label" data-region="name">
         <line x1="640" y1="120" x2="680" y2="120" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
-        <text x="690" y="132" font-family="Inter, sans-serif" font-size="36" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">① NAME</text>
+        <text x="690" y="128" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">① NAME</text>
+        <text x="690" y="150" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">lowercase, hyphenated identifier</text>
         </g>
 
         <g class="anat-label" data-region="description">
         <line x1="640" y1="190" x2="680" y2="190" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
-        <text x="690" y="202" font-family="Inter, sans-serif" font-size="36" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">② DESCRIPTION</text>
+        <text x="690" y="198" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">② DESCRIPTION</text>
+        <text x="690" y="220" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">what + when, with trigger phrases</text>
         </g>
 
         <g class="anat-label" data-region="instructions">
         <line x1="640" y1="500" x2="680" y2="500" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
-        <text x="690" y="512" font-family="Inter, sans-serif" font-size="36" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">③ INSTRUCTIONS</text>
+        <text x="690" y="508" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">③ INSTRUCTIONS</text>
+        <text x="690" y="530" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">the procedure ChatGPT follows</text>
         </g>
 
         <g class="anat-label" data-region="resources">
         <line x1="640" y1="610" x2="680" y2="610" stroke="#0D0D0D" stroke-width="1.5" marker-start="url(#anat-dot)"/>
-        <text x="690" y="622" font-family="Inter, sans-serif" font-size="36" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">④ RESOURCES</text>
+        <text x="690" y="618" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#0D0D0D" letter-spacing="0.04em">④ RESOURCES</text>
+        <text x="690" y="640" font-family="Inter, sans-serif" font-size="16" font-style="italic" fill="#0D0D0D" opacity="0.65">files the body cites</text>
         </g>
 
         <!-- ── HOTSPOTS, full file width, instructions covers full body ── -->
@@ -6541,7 +6806,7 @@
       </svg>
       <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-anatomy"]'>
         <div class="lxd-callout__label">Anatomy &middot; recognition KC</div>
-        <p>4 clickable regions on a SKILL.md mockup. Recognition-level KC for LO 2 (name &middot; description &middot; instructions &middot; references). Sets up the production-level KC downstream (placement drag-and-drop). Click aggregates to 1 progress check via <code>normalizeKey()</code>; per-region clicks don't double-count.</p>
+        <p>The real file view teaches the operating model learners must maintain later.</p>
         <span class="lxd-callout__principle">KLI rule-recognition &middot; LO 2 setup</span>
       </aside>
     </div>
@@ -6566,7 +6831,7 @@
       <div class="cp-tree" data-lxd-target="lxd-cp-tree">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-cp-tree"]'>
   <div class="lxd-callout__label">Placement &middot; production KC</div>
-  <p>5 content cards, 3 drop zones (description/body/resources). Tests LO 2 production-level KC five times with surface variation: trigger phrases &rarr; description; procedure steps and behavioral rules &rarr; body; long examples and code &rarr; resources. First-click correctness scored; bounce-back on wrong drops.</p>
+  <p>Drag-and-drop checks content classification, not just vocabulary recall.</p>
   <span class="lxd-callout__principle">KLI variable-application &middot; Bjork productive struggle</span>
 </aside>
         <div>
@@ -6818,12 +7083,12 @@
       <div class="sim__prompt"><strong>User:</strong> "this vendor wants to give us a quote for a thing we don't need, can you help me say no nicely?"</div>
     </div>
 
-    <div class="load-arch sim__panels" data-lxd-target="lxd-sim" role="figure" aria-label="Context window on left, on-disk skills on right">
-<aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-sim"]'>
+<aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-sim"]' data-lxd-flow="inline">
   <div class="lxd-callout__label">SIM &middot; integrative KC</div>
-  <p>Animation visualizes the runtime stages (discovery &rarr; activation &rarr; execution) on a fresh vendor-decline-writer scenario. Single trial after audit (dropped trial 1); variable-application is extended immediately by the application MCQ on a different scenario, and revisited at recall in KC Q1. Wrong-pick simulates the wrong skill's load sequence so learners see <em>why</em> a bad description match cascades.</p>
+  <p>The simulation makes progressive disclosure visible: metadata first, body only after activation.</p>
   <span class="lxd-callout__principle">KLI integrative KC &middot; Predict-then-verify</span>
 </aside>
+    <div class="load-arch sim__panels" data-lxd-target="lxd-sim" role="figure" aria-label="Context window on left, on-disk skills on right">
       <div class="load-arch__region load-arch__region--context">
         <div class="load-arch__region-label">Context window</div>
         <div class="load-arch__panel load-arch__panel--context">
@@ -6923,7 +7188,7 @@ First-pass fix unified the <em>visual treatment</em>: a single strong &ldquo;act
 The four types map to distinct cognitive demands so learners build a mental model of what each label signals: SIMULATION = watch + predict, EXERCISE = try + iterate with feedback, LAB = build in the real tool, KNOWLEDGE CHECK = retrieve what you know. When learners see the same label twice they can predict the interaction pattern, lowering the cognitive cost of orientation.
 
 <br><br>
-<strong>LXD-only sub-descriptions preserve the activity-specific detail.</strong> Each badge now carries a designer-only sub-description (<code>&lt;span class=&quot;lxd-only-inline&quot;&gt;&middot; Design workshop&lt;/span&gt;</code> appended inside the badge) so designers reviewing the lesson in LXD view see what each activity actually is, while learners see only the standardized type. This pattern matches the existing <code>lxd-only-inline</code> convention used for the LO-targeting labels and the LXD-only sidebar notes. KC sub-questions keep their lighter <code>.question__num</code> eyebrow because they're sub-items of one parent activity; one badge per activity, not per sub-item.
+<strong>LXD-only sub-descriptions preserve the activity-specific detail.</strong> Each badge now carries a designer-only sub-description (<code>&lt;span class=&quot;lxd-only-inline&quot;&gt;&middot; Design workshop&lt;/span&gt;</code> appended inside the badge) so designers reviewing the lesson with LXD annotations enabled see what each activity actually is, while learners see only the standardized type. This pattern matches the existing <code>lxd-only-inline</code> convention used for the LO-targeting labels and the LXD-only sidebar notes. KC sub-questions keep their lighter <code>.question__num</code> eyebrow because they're sub-items of one parent activity; one badge per activity, not per sub-item.
 
 <br><br>
 <strong>Inventory:</strong> all 9 activity badges now use one of the four standardized labels; the per-activity detail lives in LXD-only sub-descriptions.
@@ -7000,7 +7265,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
 <section id="section-diagnose" data-lxd-target="lxd-diag">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-diag"]'>
   <div class="lxd-callout__label">Diagnostic &middot; failure-then-name</div>
-  <p>Position chosen deliberately: lab Step 03 produces real failures &rarr; 1.2 names the parts (anatomy + placement) &rarr; 1.3 shows how those parts load at runtime &rarr; 1.4 retrieves the symptom-to-layer mapping. One scenario, three sub-items reads as integrative case-based reasoning, not a quiz set. Role-customized: Marketing pick swaps in Maya's <code>campaign-brief-builder</code> for Sam's universal scenario.</p>
+  <p>Failure cases connect authoring choices to supportable, real-world troubleshooting.</p>
   <span class="lxd-callout__principle">Bjork failure-then-name &middot; LO 4 KC &middot; 11 role variants</span>
 </aside>
   <div class="container">
@@ -7093,8 +7358,8 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
 <section id="section-knowledge-check" data-lxd-target="lxd-kc">
 <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-kc"]'>
   <div class="lxd-callout__label">Knowledge check &middot; retrieval pass</div>
-  <p>4 MCQs distributed across LOs proportionally to KC complexity (LO 1 conceptual: 2 KCs; LO 2 rule application: 1 KC; LO 3 description-writing: 1 KC). Each ran through <code>validate.py</code> + 19-IWF semantic audit. Length-cues, convergence-cues, and K-type all neutralized; all 4 marked Ready.</p>
-  <span class="lxd-callout__principle">Mager Criterion check &middot; Tarrant 19-IWF rubric</span>
+  <p>Final MCQs measure transfer across Bloom levels with misconception-based distractors audited for item-writing flaws.</p>
+  <span class="lxd-callout__principle">Retrieval practice (Roediger &amp; Karpicke) &middot; Mager Criterion check &middot; Tarrant 19-IWF rubric</span>
 </aside>
   <div class="container">
     <div class="quiz">
@@ -7231,7 +7496,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
 <!-- BADGE -->
 <section class="badge-section">
   <div class="container">
-    <div class="badge-card" id="badgeCard" data-state="locked" role="region" aria-label="Skill Author I badge progress">
+    <div class="badge-card" id="badgeCard" data-state="locked" role="region" aria-label="Skill Author I badge progress" data-lxd-target="lxd-badge">
       <div class="badge-card__visual" aria-hidden="true">
         <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="badge-title" class="badge-card__svg">
           <title id="badge-title">Skill Author I badge</title>
@@ -7272,6 +7537,10 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         <div class="badge-card__cert">Complete the activities on this page to earn the <strong>Skill Author I</strong> badge.</div>
       </div>
     </div>
+    <aside class="lxd-callout" data-lxd-anchor='[data-lxd-target="lxd-badge"]' data-lxd-flow="inline">
+      <div class="lxd-callout__label">Credential signal</div>
+      <p>Progress and badge language turn completion into an auditable credential signal.</p>
+    </aside>
   </div>
 </section>
 
@@ -7481,9 +7750,8 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   // ── LXD VIEW TOGGLE + WORKED-EXAMPLE STATE + CALLOUT POSITIONING ────────
   // When the toggle is OFF (default), learners see the page in its fresh
   // unfilled state. When ON, two things happen at once:
-  //   1. body.lxd-mode reveals all .lxd-callout boxes (gutter-anchored design
-  //      rationale), the LO metadata block at the top, and inline LXD chrome
-  //      (KC tags, status badges, Bloom labels).
+  //   1. body.lxd-mode reveals short blue annotations anchored to the design
+  //      choices they justify.
   //   2. applyWorkedExample() programmatically engages with every interactive
   //      element on the page so the LXD reviewer sees a "successfully engaged
   //      learner" state: chips selected, decisions correct, MCQs answered,
@@ -7579,16 +7847,26 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   }
 
   function positionCallouts() {
-    // Pin each .lxd-callout to its anchor's document Y position.
-    // Right-side callouts: anchored to right: 16px from viewport edge.
-    // Left-side callouts (data-lxd-side="left"): left: 16px.
+    // Pin each visible annotation near its anchor, with a small vertical gap
+    // so adjacent annotations do not overlap in the side gutter.
     const vw = document.documentElement.clientWidth;
     const sidebarCollapsed = document.body.classList.contains('sidebar-collapsed');
     const useGutter = vw >= 1280 && (sidebarCollapsed || vw >= 1520);
-    document.querySelectorAll('.lxd-callout').forEach(callout => {
+    const callouts = Array.from(document.querySelectorAll('.lxd-callout'))
+      .map(callout => {
       const sel = callout.dataset.lxdAnchor;
       const anchor = sel ? document.querySelector(sel) : null;
-      if (!anchor || !useGutter) {
+      const top = anchor ? anchor.getBoundingClientRect().top + window.scrollY : 0;
+      return { callout, anchor, top };
+      })
+      .sort((a, b) => a.top - b.top);
+    const floor = window.scrollY + 90;
+    const lastBottom = { left: floor, right: floor };
+
+    callouts.forEach(({ callout, anchor, top }) => {
+      const isVisible = document.body.classList.contains('lxd-mode') && getComputedStyle(callout).display !== 'none';
+      const forceInline = callout.dataset.lxdFlow === 'inline';
+      if (!anchor || !useGutter || !isVisible || forceInline) {
         if (callout._lxdMarker && callout._lxdMarker.parentNode && callout.parentNode !== callout._lxdMarker.parentNode) {
           callout._lxdMarker.parentNode.insertBefore(callout, callout._lxdMarker.nextSibling);
         }
@@ -7601,17 +7879,18 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       if (callout.parentNode !== document.body) {
         document.body.appendChild(callout);
       }
-      const rect = anchor.getBoundingClientRect();
-      const top = rect.top + window.scrollY;
+      const side = callout.dataset.lxdSide === 'left' ? 'left' : 'right';
+      const adjustedTop = Math.max(top, lastBottom[side] + 12);
       callout.style.position = 'absolute';
-      callout.style.top = `${top}px`;
-      if (callout.dataset.lxdSide === 'left') {
+      callout.style.top = `${adjustedTop}px`;
+      if (side === 'left') {
         callout.style.left = '16px';
         callout.style.right = '';
       } else {
         callout.style.right = '16px';
         callout.style.left = '';
       }
+      lastBottom[side] = adjustedTop + callout.offsetHeight;
     });
   }
 
@@ -7751,22 +8030,46 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
     };
     let currentIdx = 0;
     const firstAttempt = {}; // region -> true/false
+    const hintUsed = {}; // region -> true if Show Me was clicked
     const promptEl = cp.querySelector('[data-anat-prompt]');
     const scoreEl = cp.querySelector('[data-anat-score]');
     const labelGroups = cp.querySelectorAll('.anat-label');
     const hotspots = cp.querySelectorAll('.anat-hotspot');
+    const hintBtn = cp.querySelector('[data-anat-hint]');
+    const hintLabelEl = cp.querySelector('[data-anat-hint-label]');
 
     // Initialize: hide all labels
     labelGroups.forEach(g => g.classList.add('hidden'));
+
+    function resetHintBtnForCurrent() {
+      if (!hintBtn) return;
+      const target = targets[currentIdx];
+      if (target && hintUsed[target]) {
+        // Already revealed for this target, keep disabled and labeled
+        hintBtn.disabled = true;
+        if (hintLabelEl) hintLabelEl.textContent = 'Hint shown';
+      } else {
+        hintBtn.disabled = false;
+        if (hintLabelEl) hintLabelEl.textContent = 'Show me where';
+      }
+    }
 
     function updatePrompt() {
       if (currentIdx >= targets.length) {
         promptEl.classList.add('complete');
         promptEl.innerHTML = 'Found all four. The diagram is now your reference for the rest of the lesson.';
+        if (hintBtn) {
+          hintBtn.disabled = true;
+          hintBtn.style.display = 'none';
+        }
       } else {
         promptEl.classList.remove('complete');
         const next = labels[targets[currentIdx]];
         promptEl.innerHTML = `Click the part of this <code>SKILL.md</code> file that holds the <span class="anat-target">${next}</span>.`;
+        if (hintBtn) {
+          hintBtn.style.display = '';
+        }
+        resetHintBtnForCurrent();
       }
     }
 
@@ -7789,6 +8092,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
           if (labelGroup) labelGroup.classList.remove('hidden');
           // Mark hotspot as found, lock it
           h.classList.add('found');
+          h.classList.remove('hint-pulse');
           h.setAttribute('tabindex', '-1');
           // Advance
           currentIdx++;
@@ -7810,16 +8114,46 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       });
     });
 
+    // Hint button: pulse the correct hotspot for the current target.
+    // Using a hint disqualifies first-try credit for that target.
+    if (hintBtn) {
+      hintBtn.addEventListener('click', () => {
+        if (currentIdx >= targets.length) return;
+        const target = targets[currentIdx];
+        // Disqualify first-try credit for this target if not already attempted
+        if (!(target in firstAttempt)) {
+          firstAttempt[target] = false;
+        }
+        hintUsed[target] = true;
+        // Pulse the correct hotspot
+        const correctHotspot = cp.querySelector(`.anat-hotspot[data-region="${target}"]`);
+        if (correctHotspot && !correctHotspot.classList.contains('found')) {
+          correctHotspot.classList.remove('hint-pulse');
+          // Force reflow so the animation restarts cleanly
+          void correctHotspot.getBoundingClientRect();
+          correctHotspot.classList.add('hint-pulse');
+          setTimeout(() => correctHotspot.classList.remove('hint-pulse'), 2400);
+        }
+        // Disable button and update label
+        hintBtn.disabled = true;
+        if (hintLabelEl) hintLabelEl.textContent = 'Hint shown';
+      });
+    }
+
     // Reset handler, clear all label reveals, hotspot states, score, restart prompt
     cp.addEventListener('assess-reset', () => {
       currentIdx = 0;
       Object.keys(firstAttempt).forEach(k => delete firstAttempt[k]);
+      Object.keys(hintUsed).forEach(k => delete hintUsed[k]);
       scoreEl.textContent = '0';
       labelGroups.forEach(g => g.classList.add('hidden'));
       hotspots.forEach(h => {
-        h.classList.remove('found', 'wrong');
+        h.classList.remove('found', 'wrong', 'hint-pulse');
         h.setAttribute('tabindex', '0');
       });
+      if (hintBtn) {
+        hintBtn.style.display = '';
+      }
       updatePrompt();
     });
   });

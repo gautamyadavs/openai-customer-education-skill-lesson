@@ -67,9 +67,3 @@ I'm transparent about AI use in production because the role is. The work demonst
 HTML, vanilla CSS, vanilla JS. No build step, no framework, no analytics SDK. One file, ~750 KB, ~9,800 lines. Loads instantly. Works offline after download. Mobile-responsive.
 
 This is also a design choice: a self-paced learning asset that the customer can deploy anywhere, that doesn't depend on a vendor LMS, and that an enterprise customer can drop into their own learning platform without procurement friction.
-
----
-
-## Contact
-
-Submitting as part of the Customer Education, Learning Experience & Curriculum Lead application at OpenAI ([job posting](https://jobs.ashbyhq.com/openai/c4726cfd-59c2-4977-80c3-e2204ce27b8e)).
