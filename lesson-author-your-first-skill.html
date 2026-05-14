@@ -133,21 +133,25 @@
     z-index: 50;
   transition: width 0.28s ease, transform 0.28s ease;
     font-family: var(--body);
+    overflow: hidden;
   }
   .course-nav[data-state="collapsed"] {
     width: 56px;
   }
   .course-nav__rail {
     flex-shrink: 0;
-    width: 56px;
-    border-right: 1px solid var(--rule);
+    width: 0;
+    border-right: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 18px;
+    padding-top: 0;
+    overflow: hidden;
   }
   .course-nav[data-state="collapsed"] .course-nav__rail {
-    border-right: none;
+    width: 56px;
+    padding-top: 18px;
+    overflow: visible;
   }
   .course-nav__toggle {
     width: 32px;
@@ -171,7 +175,7 @@
     outline: 2px solid var(--ink);
     outline-offset: 2px;
   }
-  .course-nav[data-state="collapsed"] .course-nav__toggle-icon {
+  .course-nav__rail .course-nav__toggle-icon {
     transform: scaleX(-1);
   }
   .course-nav__panel {
@@ -189,8 +193,20 @@
   }
 
   .course-nav__head {
-    padding: 18px 20px 14px;
+    position: relative;
+    padding: 16px 56px 14px 20px;
     border-bottom: 1px solid var(--rule);
+  }
+  .course-nav__head-top {
+    display: block;
+  }
+  .course-nav__head-main {
+    min-width: 0;
+  }
+  .course-nav__head .course-nav__toggle {
+    position: absolute;
+    top: 16px;
+    right: 16px;
   }
   .course-nav__breadcrumb {
     font-family: var(--mono);
@@ -6028,7 +6044,7 @@
   }
 </style>
 </head>
-<body class="has-sidebar sidebar-collapsed">
+<body class="has-sidebar">
 
 <a class="skip-link" href="#main">Skip to main content</a>
 
@@ -6038,9 +6054,9 @@
      are listed without expanded sub-section TOCs).
      Current page (1.1 Author your first Skill) is highlighted with
      live section position; other pages show metadata only. -->
-<aside class="course-nav" id="courseNav" aria-label="Module 1: Authoring Skills navigation" data-state="collapsed">
+<aside class="course-nav" id="courseNav" aria-label="Module 1: Authoring Skills navigation" data-state="expanded">
   <div class="course-nav__rail">
-    <button class="course-nav__toggle" id="courseNavToggle" type="button" aria-label="Expand module navigation" aria-expanded="false" aria-controls="courseNav">
+    <button class="course-nav__toggle" id="courseNavRailToggle" type="button" aria-label="Expand module navigation" aria-expanded="false" aria-controls="courseNav" aria-hidden="true" tabindex="-1">
       <svg class="course-nav__toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="11 17 6 12 11 7"></polyline>
         <polyline points="18 17 13 12 18 7"></polyline>
@@ -6049,11 +6065,21 @@
   </div>
   <div class="course-nav__panel">
     <div class="course-nav__head">
-      <div class="course-nav__breadcrumb">
-        <span class="course-nav__course-label">Agent Skills</span>
+      <div class="course-nav__head-top">
+        <div class="course-nav__head-main">
+          <div class="course-nav__breadcrumb">
+            <span class="course-nav__course-label">Agent Skills</span>
+          </div>
+          <h2 class="course-nav__module-title">Module 1 &middot; Authoring Skills</h2>
+          <div class="course-nav__meta">4 pages &middot; ~2 hr 5 min</div>
+        </div>
+        <button class="course-nav__toggle" id="courseNavToggle" type="button" aria-label="Collapse module navigation" aria-expanded="true" aria-controls="courseNav" aria-hidden="false">
+          <svg class="course-nav__toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="11 17 6 12 11 7"></polyline>
+            <polyline points="18 17 13 12 18 7"></polyline>
+          </svg>
+        </button>
       </div>
-      <h2 class="course-nav__module-title">Module 1 &middot; Authoring Skills</h2>
-      <div class="course-nav__meta">4 pages &middot; ~2 hr 5 min</div>
       <div class="course-nav__prereq lxd-only-block">Assumes: <em>Introduction to Agents</em> &middot; foundations covered there: agent vs workflow, the LLM-tool-memory-planning loop, why context engineering matters.</div>
     </div>
     <ol class="course-nav__pages">
@@ -6455,20 +6481,20 @@
     <p class="primer__lede">Four things to know before you author one.</p>
     <div class="primer-grid" role="list" aria-label="Four things to know about skills" data-lxd-target="lxd-primer">
       <div class="primer-card" role="listitem">
-        <p class="primer-card__label">When to make one</p>
-        <p class="primer-card__body">If you find yourself explaining the same workflow to ChatGPT over and over, that's a skill waiting to be written.</p>
+        <p class="primer-card__label">When to make a skill</p>
+        <p class="primer-card__body">Make a skill when you want an AI agent to handle the same kind of task repeatedly, guided by the same steps, standards, or supporting files. For one-off work, a normal prompt is usually enough.</p>
       </div>
       <div class="primer-card" role="listitem">
         <p class="primer-card__label">What a skill is</p>
-        <p class="primer-card__body">A short write-up that teaches ChatGPT how to do a specific task. You write it once; ChatGPT follows it every time the task comes up.</p>
+        <p class="primer-card__body">A skill is a reusable bundle of instructions, and sometimes files or code, that tells an AI agent how to do a specific task consistently.</p>
       </div>
       <div class="primer-card" role="listitem">
-        <p class="primer-card__label">Where it lives</p>
-        <p class="primer-card__body">Saved to your ChatGPT account at <a href="https://chatgpt.com/skills" target="_blank" rel="noopener noreferrer"><code>chatgpt.com/skills</code></a>. Available in every new chat from then on. No prompt library to maintain.</p>
+        <p class="primer-card__label">Where it can live</p>
+        <p class="primer-card__body">In this lesson, you will save your skill in ChatGPT. More broadly, skills can live anywhere an AI agent or app is built to access and load them, such as an agent workspace, project folder, command-line tool, or server workflow.</p>
       </div>
       <div class="primer-card" role="listitem">
-        <p class="primer-card__label">How it shows up</p>
-        <p class="primer-card__body">ChatGPT picks the right one. It matches your request against your saved skills and activates the one that fits.</p>
+        <p class="primer-card__label">How it gets used</p>
+        <p class="primer-card__body">In ChatGPT, your request can trigger the matching saved skill. In other environments, a skill may be loaded explicitly, configured for a project, or called by a command-line or server workflow.</p>
       </div>
     </div>
   </div>
@@ -6625,7 +6651,12 @@
                 <span class="prompt-template__action-text">Open in ChatGPT</span>
               </a>
             </div>
-            <div class="prompt-template__body" data-prompt-body>Help me create a skill. Keep it conversational, and start by asking what the skill should do.</div>
+            <div class="prompt-template__body" data-prompt-body>I designed this starter skill in the lesson. Use the name and description below as the starting point, then ask me any follow-up questions you need before drafting the skill.
+
+Name: [generated skill name]
+Description: [generated skill description]
+
+Help me create this skill. Keep it conversational.</div>
           </div>
           <p>ChatGPT will ask follow-up questions, then generate a draft SKILL.md and offer an <strong>Install</strong> button. Click Install when you're happy with the draft.</p>
         </div>
@@ -6752,7 +6783,7 @@
     <li><strong>IWF #11 absolute term &ldquo;all&rdquo; (8 violations): IDIOMATIC SUBSTRING MATCH.</strong> The HR/standards starter's WHEN clause includes &ldquo;send to all hands&rdquo;, a workplace idiom. The validator pattern matches the substring &ldquo;all &rdquo; (with trailing space). The idiom is a real-world trigger phrase that authors would use; replacing it would make the WHEN clause less authentic. False positive of the absolute-term heuristic.</li>
   </ul>
   <p><strong>Final audit state: 0 IWF#7 (was 33), 36 IWF#4 (was 33, all Minor risk per Haladyna), 0 Flagged violations.</strong> Per mcq-quality-coach quality status thresholds: 0 Flagged + multiple Minor risks with documented intrinsic rationale = Ready with note. The remaining length differentials are structural to the content being taught and have been mitigated as far as the underlying pedagogy allows.</p>
-  <p><strong>Adaptive prompt template carries Step 01 output into Step 02.</strong> When the workshop verdict reveals, the prompt template silently updates: the bare starter (<em>&ldquo;Help me create a skill. Keep it conversational...&rdquo;</em>) gets the learner's composed name and description appended as context. The Copy and Open in ChatGPT buttons regenerate from the combined text. Step 02's intro paragraph acknowledges this directly: &ldquo;The prompt below is pre-filled with the name and description you designed in Step 01.&rdquo; ChatGPT's built-in <code>skill-creator</code> picks up the pre-designed context and asks follow-up questions about the parts the learner hasn't pinned down yet.</p>
+  <p><strong>Adaptive prompt template carries Step 01 output into Step 02.</strong> When the workshop verdict reveals, the prompt template silently updates to say the learner already designed a starter skill, then inserts the composed name and description before asking ChatGPT to help create the skill. The Copy and Open in ChatGPT buttons regenerate from that combined text. Step 02's intro paragraph acknowledges this directly: &ldquo;The prompt below is pre-filled with the name and description you designed in Step 01.&rdquo; ChatGPT's built-in <code>skill-creator</code> picks up the pre-designed context and asks follow-up questions about the parts the learner hasn't pinned down yet.</p>
   <p><strong>Verdict stripped to forward-pointing line only after merge.</strong> Earlier draft's verdict had four elements: feedback (&ldquo;Three good calls.&rdquo;), framing (&ldquo;Here's the description you've designed:&rdquo;), the composed two-line SKILL.md description block, a Copy button, and the forward-pointing tail. With the merged section structure, the composed description block + Copy button are redundant: Step 02's prompt template already auto-populates with the same name + description, and Step 02's Copy prompt + Open in ChatGPT buttons already provide the copy/launch affordances. Showing the artifact twice with two Copy buttons forces the learner to pick a copy path that doesn't matter. The verdict is now just one paragraph: <em>&ldquo;Next, ChatGPT will help you draft the instructions. Steps 02 and 03 below are now unlocked.&rdquo;</em> The reveal of Steps 02 and 03 itself functions as the positive feedback (action-as-reinforcement); the line is the redirect. Removed: <code>.apply-block__compose</code>, <code>.apply-block__compose-block</code>, <code>.apply-block__compose-key</code>, <code>.apply-block__copy*</code>, <code>.apply-block__verdict-lede</code> CSS rules; the Copy-button event handler in JS; the <code>composeName.textContent</code> / <code>composeDesc.textContent</code> assignments. Kept: the <code>composedNameStr</code> / <code>composedDescStr</code> string composition because Step 02's prompt template still consumes them.</p>
   <p><strong>One integrative artifact, not decomposed sub-skill drills.</strong> LO 4's KC is &ldquo;ship a working skill,&rdquo; a complex/integrative procedure that requires coordinated practice in the actual environment. Mager's three-component LO is satisfied: <strong>Performance</strong> (author + deploy + test in ChatGPT), <strong>Conditions</strong> (test prompts the learner generates themselves), <strong>Criterion</strong> (skill activates on at least the casual and different-framing phrasings).</p>
   <p><strong>Use ChatGPT's built-in <code>skill-creator</code>, not a custom prompt template.</strong> An earlier draft asked the learner to paste their composed description and have ChatGPT &ldquo;draft a SKILL.md around it&rdquo; via a structured multi-section prompt. That worked, but it taught a workaround for a problem ChatGPT solved already: per OpenAI's own Help Center, every account ships with a built-in <code>skill-creator</code> skill that handles authoring conversationally. The honest pedagogy is to use the real tool. Step 02's prompt is the OpenAI-recommended starter which auto-invokes <code>skill-creator</code>.</p>
@@ -7816,8 +7847,9 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
   (function setupCourseNav() {
     const nav = document.getElementById('courseNav');
     const toggle = document.getElementById('courseNavToggle');
+    const railToggle = document.getElementById('courseNavRailToggle');
     const fab = document.getElementById('courseNavFab');
-    if (!nav || !toggle) return;
+    if (!nav || !toggle || !railToggle) return;
 
     document.body.classList.add('has-sidebar');
 
@@ -7827,8 +7859,14 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
 
     function setState(state, persistPreference = true) {
       nav.dataset.state = state;
-      toggle.setAttribute('aria-expanded', state === 'expanded' ? 'true' : 'false');
-      toggle.setAttribute('aria-label', state === 'expanded' ? 'Collapse module navigation' : 'Expand module navigation');
+      [toggle, railToggle].forEach(btn => {
+        btn.setAttribute('aria-expanded', state === 'expanded' ? 'true' : 'false');
+        btn.setAttribute('aria-label', state === 'expanded' ? 'Collapse module navigation' : 'Expand module navigation');
+      });
+      toggle.tabIndex = state === 'expanded' ? 0 : -1;
+      railToggle.tabIndex = state === 'collapsed' ? 0 : -1;
+      toggle.setAttribute('aria-hidden', state === 'expanded' ? 'false' : 'true');
+      railToggle.setAttribute('aria-hidden', state === 'collapsed' ? 'false' : 'true');
       if (isMobile()) {
         if (fab) fab.setAttribute('data-show', state === 'collapsed' ? 'true' : 'false');
       } else {
@@ -7836,20 +7874,24 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         document.body.classList.toggle('sidebar-collapsed', state === 'collapsed');
       }
       if (persistPreference && !isMobile()) {
-        try { localStorage.setItem('courseNavState', state); } catch(e) {}
+        try { localStorage.setItem('courseNavStateV2', state); } catch(e) {}
       }
     }
 
     toggle.addEventListener('click', () => {
       setState(nav.dataset.state === 'expanded' ? 'collapsed' : 'expanded');
     });
+    railToggle.addEventListener('click', () => {
+      setState('expanded');
+    });
     if (fab) {
       fab.addEventListener('click', () => setState('expanded', false));
     }
 
-    // Initial state: default first desktop load collapsed, then respect any saved preference.
-    let initial = 'collapsed';
-    try { initial = localStorage.getItem('courseNavState') || 'collapsed'; } catch(e) {}
+    // Initial state: default first desktop load expanded so the course overview
+    // is visible, then respect any saved preference made with this layout.
+    let initial = 'expanded';
+    try { initial = localStorage.getItem('courseNavStateV2') || 'expanded'; } catch(e) {}
     if (isMobile()) initial = 'collapsed';
     setState(initial, !isMobile());
 
@@ -10369,6 +10411,13 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
       return a;
     }
 
+    function buildSkillCreatorPrompt(name = '[generated skill name]', description = '[generated skill description]') {
+      return 'I designed this starter skill in the lesson. Use the name and description below as the starting point, then ask me any follow-up questions you need before drafting the skill.\n\n'
+        + 'Name: ' + name + '\n'
+        + 'Description: ' + description + '\n\n'
+        + 'Help me create this skill. Keep it conversational.';
+    }
+
     function renderDecisions(starter) {
       const decisionsBlock = document.querySelector('[data-decisions]');
       if (!decisionsBlock) return;
@@ -10471,19 +10520,14 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
               const composedNameStr = data.name;
               const composedDescStr = cap(data.what) + '. ' + data.when;
 
-              // Adaptive lab prompt template: append the composed name+description
-              // as context to the bare starter prompt, so skill-creator gets the
-              // workshop output as context. Also reveal the soft instruction note
-              // above the prompt template ("Since you designed the name and
-              // description in the workshop, those are pre-filled..."), and
-              // regenerate the Copy + Open in ChatGPT button targets.
+              // Adaptive lab prompt template: carry the composed name +
+              // description from Step 01 into Step 02, then regenerate the
+              // Copy + Open in ChatGPT button targets.
               const promptBody = document.querySelector('[data-prompt-body]');
               const promptLink = document.querySelector('[data-prompt-link]');
               const contextNote = document.querySelector('[data-prompt-context-note]');
               if (promptBody) {
-                const baseStarter = "Help me create a skill. Keep it conversational, and start by asking what the skill should do.";
-                const contextBlock = "\n\nContext: I've already designed a name and description:\nname: " + composedNameStr + "\ndescription: " + composedDescStr;
-                promptBody.textContent = baseStarter + contextBlock;
+                promptBody.textContent = buildSkillCreatorPrompt(composedNameStr, composedDescStr);
                 if (promptLink) {
                   promptLink.href = 'https://chatgpt.com/?q=' + encodeURIComponent(promptBody.textContent);
                 }
@@ -10519,7 +10563,7 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         const promptLinkReset = document.querySelector('[data-prompt-link]');
         const contextNoteReset = document.querySelector('[data-prompt-context-note]');
         if (promptBodyReset) {
-          promptBodyReset.textContent = "Help me create a skill. Keep it conversational, and start by asking what the skill should do.";
+          promptBodyReset.textContent = buildSkillCreatorPrompt();
           if (promptLinkReset) {
             promptLinkReset.href = 'https://chatgpt.com/?q=' + encodeURIComponent(promptBodyReset.textContent);
           }
@@ -10561,10 +10605,10 @@ Refined dimensions: font-size 10.5px (from 11.5px); padding 5px 11px (from 6px 1
         const promptLink = document.querySelector('[data-prompt-link]');
         const contextNote = document.querySelector('[data-prompt-context-note]');
         if (promptBody) {
-          const baseStarter = "Help me create a skill. Keep it conversational, and start by asking what the skill should do.";
-          promptBody.textContent = baseStarter;
+          const starterPrompt = buildSkillCreatorPrompt();
+          promptBody.textContent = starterPrompt;
           if (promptLink) {
-            promptLink.href = 'https://chatgpt.com/?q=' + encodeURIComponent(baseStarter);
+            promptLink.href = 'https://chatgpt.com/?q=' + encodeURIComponent(starterPrompt);
           }
         }
         if (contextNote) contextNote.setAttribute('hidden', '');
